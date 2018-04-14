@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FacesPrinterx86.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ServicesAddress" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">net.pipe://localhost/Printerx86</Value>
+    </Setting>
+    <Setting Name="LandscapeTemplatePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">LandscapeNoubelAir.lbx</Value>
+    </Setting>
+    <Setting Name="Url" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://www.koxigru.net/noubelair/index.html?path=</Value>
+    </Setting>
+    <Setting Name="PortraitTemplatePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">PortraitNoubelAir.lbx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -5,16 +5,42 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "face-o-maton", "face-o-maton\face-o-maton.csproj", "{CB8E667B-C294-41EC-BFAF-5E3F18B11512}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacesPrinterInterface", "FacesPrinterInterface\FacesPrinterInterface.csproj", "{91C2B8AD-BBAF-46D6-B32D-04655D897042}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacesPrinterx86", "FacesPrinterx86\FacesPrinterx86.csproj", "{D4992FCB-BB93-4D62-867D-716AB5D7A39D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Debug|x86.Build.0 = Debug|Any CPU
 		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB8E667B-C294-41EC-BFAF-5E3F18B11512}.Release|x86.Build.0 = Release|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Debug|x86.Build.0 = Debug|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Release|x86.ActiveCfg = Release|Any CPU
+		{91C2B8AD-BBAF-46D6-B32D-04655D897042}.Release|x86.Build.0 = Release|Any CPU
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Debug|x86.ActiveCfg = Debug|x86
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Debug|x86.Build.0 = Debug|x86
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Release|x86.ActiveCfg = Release|x86
+		{D4992FCB-BB93-4D62-867D-716AB5D7A39D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

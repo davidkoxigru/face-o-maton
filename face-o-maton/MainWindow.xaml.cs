@@ -24,5 +24,23 @@ namespace face_o_maton
         {
             InitializeComponent();
         }
+
+        private void Video_Button_Click(object sender, RoutedEventArgs e)
+        {
+            VideoWindow videoWindow = new VideoWindow();
+            videoWindow.Show();
+        }
+
+        private void Photo_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PhotoWindow photoWindow = new PhotoWindow();
+            photoWindow.Show();
+        }
+
+        private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
+        {
+            MixFacesWindow mixFacesWindow = new MixFacesWindow();
+            mixFacesWindow.Show();
+        }
     }
 }
