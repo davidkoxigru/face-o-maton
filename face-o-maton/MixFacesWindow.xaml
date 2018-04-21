@@ -3,12 +3,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:face_o_maton"
         mc:Ignorable="d"
         Title="MixFacesWindow"
         WindowStyle="None"  
-        WindowState="Maximized">
-    <Grid>
-        
+        AllowsTransparency="True" 
+        WindowState="Maximized" Width="1920" Height="1080">
+    <Grid x:Name="GridMixFaces">
+        <Image x:Name="ImageMixFaces"/>
+
+        <Button x:Name="Button_change_left" Content="Button" Width="150" HorizontalAlignment="Left" Click="Button_change_left_Click">
+            <Button.Background>
+                <SolidColorBrush Color="Blue" Opacity="0.3" />
+            </Button.Background>
+        </Button>
+        <Button  x:Name="Button_change_right" Content="Button" Width="150" HorizontalAlignment="Right" Click="Button_change_right_Click">
+            <Button.Background>
+                <SolidColorBrush Color="Blue" Opacity="0.3" />
+            </Button.Background>
+        </Button>
+        <Button  x:Name="Button_stop" Content="Button" Width="200" HorizontalAlignment="Center" Height="200" VerticalAlignment="Bottom" Click="Button_stop_Click">
+            <Button.Background>
+                <SolidColorBrush Color="Red" Opacity="0.3" />
+            </Button.Background>
+        </Button>
+
+        <Button  x:Name="Button_cancel" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
+            <Button.Background>
+                <SolidColorBrush Color="Red" Opacity="0.3" />
+            </Button.Background>
+        </Button>
+        <Button  x:Name="Button_print" Content="Button" Width="200" Height="200" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_print_Click">
+            <Button.Background>
+                <SolidColorBrush Color="Green" Opacity="0.3" />
+            </Button.Background>
+        </Button>
+
     </Grid>
 </Window>

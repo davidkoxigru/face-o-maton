@@ -108,27 +108,33 @@ namespace StarProj
                     return null;
 
                 for (var i = 3; i > 0; i--) _currentIds[i] = _currentIds[i - 1];
+
                 _currentIds[0] = _rndGetImage.Next(0, _faces.Count() - 1);
+                while (_faces[_currentIds[0]] == null || _faces[_currentIds[0]].Count < 4)
+                {
+                    _currentIds[0] = _rndGetImage.Next(0, _faces.Count() - 1);
+                }
+
+                // haut
+                var topPath = _faces[_currentIds[0]][0];
+                // droite
+                var rightPath = _faces[_currentIds[1]][1];
+                // bas
+                var bottomPath = _faces[_currentIds[2]][2];
+                // gauche
+                var leftPath = _faces[_currentIds[3]][3];
 
 
                 Json json = new Json();
                 json.angle = 270;
                 json.type = "Star";
                 
-                // haut
-                var topPath = _faces[_currentIds[0]][0];
                 json.addItem(topPath, "Haut");
                 
-                // droite
-                var rightPath = _faces[_currentIds[1]][1];
                 json.addItem(rightPath, "Droite");
-                
-                // bas
-                var bottomPath = _faces[_currentIds[2]][2];
+                                
                 json.addItem(bottomPath, "Bas");
 
-                // gauche
-                var leftPath = _faces[_currentIds[3]][3];
                 json.addItem(leftPath, "Gauche");
 
                 var face0 = FastLoad(topPath);

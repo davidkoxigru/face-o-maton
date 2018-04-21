@@ -20,27 +20,33 @@ namespace face_o_maton
     /// </summary>
     public partial class MainWindow : Window
     {
+        VideoWindow videoWindow;
+        PhotoWindow photoWindow;
+        MixFacesWindow mixFacesWindow;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            videoWindow = new VideoWindow();
+            photoWindow = new PhotoWindow();
+            mixFacesWindow = new MixFacesWindow();
         }
 
         private void Video_Button_Click(object sender, RoutedEventArgs e)
         {
-            VideoWindow videoWindow = new VideoWindow();
             videoWindow.Show();
         }
 
         private void Photo_Button_Click(object sender, RoutedEventArgs e)
         {
-            PhotoWindow photoWindow = new PhotoWindow();
             photoWindow.Show();
         }
 
         private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
         {
-            MixFacesWindow mixFacesWindow = new MixFacesWindow();
             mixFacesWindow.Show();
+            mixFacesWindow.Start();
         }
     }
 }

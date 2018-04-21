@@ -26,7 +26,7 @@ namespace face_o_maton
 
         private void Photo_Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            this.Hide();
         }
     }
 }

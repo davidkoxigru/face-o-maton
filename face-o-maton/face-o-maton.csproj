@@ -34,8 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Face-o-maton\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Channels" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -54,15 +61,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FacesAnim.cs" />
+    <Compile Include="FacesPrinter.cs" />
+    <Compile Include="FacesPrinterClient.cs" />
     <Compile Include="MixFacesWindow.xaml.cs">
       <DependentUpon>MixFacesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PhotoWindow.xaml.cs">
       <DependentUpon>PhotoWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SoundSyncClient.cs" />
     <Compile Include="VideoWindow.xaml.cs">
       <DependentUpon>VideoWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WcfClient.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,6 +136,32 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="pictures\Photo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FacesPrinterInterface\FacesPrinterInterface.csproj">
+      <Project>{91c2b8ad-bbaf-46d6-b32d-04655d897042}</Project>
+      <Name>FacesPrinterInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FacesProj\FacesProj.csproj">
+      <Project>{6d5fe215-ec8c-47c8-a7eb-6530d62670ad}</Project>
+      <Name>FacesProj</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InterfaceImage\InterfaceProj.csproj">
+      <Project>{1c0e6d07-80a4-4bc3-a6e5-4c0acf388aa3}</Project>
+      <Name>InterfaceProj</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PopProj\PopProj.csproj">
+      <Project>{71bbcf5b-0382-48b3-9b40-9be8ab20eba1}</Project>
+      <Name>PopProj</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoundSyncInterface\SoundSyncInterface.csproj">
+      <Project>{fed40485-192d-4b6b-b6a1-c006599bbd75}</Project>
+      <Name>SoundSyncInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StarProj\StarProj.csproj">
+      <Project>{c3673c50-bd78-461b-ad94-ae376d02f804}</Project>
+      <Name>StarProj</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

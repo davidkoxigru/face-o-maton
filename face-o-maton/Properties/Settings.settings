@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="face_o_maton.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FacesPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\Faces\</Value>
+    </Setting>
+    <Setting Name="SoundSyncx86Uri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">net.pipe://PC-DAVID/SoundSyncx86</Value>
+    </Setting>
+    <Setting Name="FacesPrinterx86Uri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">net.pipe://PC-DAVID/Printerx86</Value>
+    </Setting>
+    <Setting Name="Printer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Brother QL-500</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
