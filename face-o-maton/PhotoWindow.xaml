@@ -8,13 +8,20 @@
         Title="PhotoWindow"
         WindowStyle="None"  
         WindowState="Maximized">
-    <Grid>
+    <Grid x:Name="GridPhoto">
+        <Image x:Name="Photo"/>
         <Button Height="300" Width="300" Click="Photo_Button_Click">
             <Button.Template>
                 <ControlTemplate>
                     <Image Source="pictures/Photo.png"/>
                 </ControlTemplate>
             </Button.Template>
+        </Button>
+
+        <Button  x:Name="Button_cancel" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
+            <Button.Background>
+                <SolidColorBrush Color="Red" Opacity="0.3" />
+            </Button.Background>
         </Button>
     </Grid>
 </Window>
