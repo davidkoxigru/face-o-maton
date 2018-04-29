@@ -2,6 +2,7 @@
 using CameraControl.Devices.Classes;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WebEye.Controls.Wpf.StreamPlayerControl;
+using Timer = System.Timers.Timer;
 
 namespace face_o_maton
 {
@@ -24,7 +27,11 @@ namespace face_o_maton
     public partial class PhotoWindow : Window
     {
         public CameraDeviceManager DeviceManager { get; set; }
-        public string FolderForPhotos { get; set; }
+
+        public ICameraDevice CameraDevice { get; set; }
+
+        private Timer _timer = new Timer(1000 / 15);
+
 
         public PhotoWindow()
         {
@@ -32,16 +39,140 @@ namespace face_o_maton
             StartCamera();
         }
 
-        
+        void PhotoWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            StartLiveView();
+        }
+
         private void StartCamera()
         {
             DeviceManager = new CameraDeviceManager();
             DeviceManager.ConnectToCamera();
             DeviceManager.SelectedCameraDevice = DeviceManager.ConnectedDevices.First();
             DeviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
+            CameraDevice = DeviceManager.SelectedCameraDevice;
+        }
+
+        private void StartLiveView()
+        {
+            try
+            {
+
+                if (!IsActive)
+                    return;
+
+                string resp = CameraDevice.GetProhibitionCondition(OperationEnum.LiveView);
+                if (string.IsNullOrEmpty(resp))
+                {
+                    Thread thread = new Thread(StartLiveViewThread);
+                    thread.Start();
+                    thread.Join();
+                }
+                else
+                {
+                    Log.Error("Error starting live view " + resp);
+                    _timer.Stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error starting live view ", ex);
+                _timer.Stop();
+            }
+        }
+
+        private StreamPlayerControl _videoSource = new StreamPlayerControl();
+        private void StartLiveViewThread()
+        {
+            try
+            {
+                bool retry = false;
+                int retryNum = 0;
+                Log.Debug("LiveView: Liveview started");
+                do
+                {
+                    try
+                    {
+                        CameraDevice.StartLiveView();
+                    }
+                    catch (DeviceException deviceException)
+                    {
+                        if (deviceException.ErrorCode == ErrorCodes.ERROR_BUSY ||
+                            deviceException.ErrorCode == ErrorCodes.MTP_Device_Busy)
+                        {
+                            Thread.Sleep(100);
+                            Log.Debug("Retry live view :" + deviceException.ErrorCode.ToString("X"));
+                            retry = true;
+                            retryNum++;
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                } while (retry && retryNum < 35);
+
+                if (CameraDevice.GetCapability(CapabilityEnum.LiveViewStream))
+                {
+                    Application.Current.Dispatcher.BeginInvoke(new Action(
+                        () =>
+                        {
+                            _videoSource.StartPlay(new Uri(CameraDevice.GetLiveViewStream()));
+                            StaticHelper.Instance.SystemMessage = "Waiting for live view stream...";
+                        }));
+                }
+                else
+                {
+                    _timer.Elapsed += _timer_Elapsed;
+                    _timer.Start();
+                }
+
+                Log.Debug("LiveView: Liveview start done");
+            }
+            catch (Exception exception)
+            {
+                Log.Error("Unable to start liveview !", exception);
+                StaticHelper.Instance.SystemMessage = "Unable to start liveview ! " + exception.Message;
+            }
+        }
+
+        void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            _timer.Stop();
+            Task.Factory.StartNew(GetLiveViewThread);
+        }
+
+
+        private void GetLiveViewThread()
+        {
+            Get();
+            _timer.Start();
+        }
+
+        void Get()
+        {
+            LiveViewData LiveViewData = null;
+            try
+            {
+                LiveViewData = CameraDevice.GetLiveViewImage();
             
-            // check if camera support live view
-            // DeviceManager.SelectedCameraDevice.GetCapability(CapabilityEnum.LiveView);  
+                if (LiveViewData != null && LiveViewData.ImageData != null)
+                {
+                    Bitmap bitmap = new Bitmap(new MemoryStream(LiveViewData.ImageData,
+                        LiveViewData.ImageDataPosition,
+                        LiveViewData.ImageData.Length - LiveViewData.ImageDataPosition));
+
+                    GridPhoto.Dispatcher.Invoke(() => Photo.Source = BitmapUtils.BitmapToImageSource(bitmap));
+
+                    // IsMovieRecording = LiveViewData.MovieIsRecording;
+
+                }
+            }
+            catch (Exception)
+            {
+
+
+            }
         }
 
         void DeviceManager_CameraDisconnected(ICameraDevice cameraDevice)
@@ -63,7 +194,6 @@ namespace face_o_maton
                 return;
             try
             {
-
                 var date = DateTime.Now.ToString("yyyyMMddHHmmssffff");
                 var fileName = Properties.Settings.Default.FacesPath + date + ".jpg";
                 // if file exist try to generate a new filename to prevent file lost. 
@@ -91,9 +221,10 @@ namespace face_o_maton
             }
         }
 
-
         private void Photo_Button_Click(object sender, RoutedEventArgs e)
         {
+            CameraDevice.StopLiveView();
+            CameraDevice.AutoFocus();
             Thread thread = new Thread(Capture);
             thread.Start();
         }
@@ -133,7 +264,8 @@ namespace face_o_maton
 
         private void Button_cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
+            CameraDevice.StopLiveView();
+            Hide();
         }
     }
 }
