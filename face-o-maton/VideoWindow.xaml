@@ -8,7 +8,25 @@
         Title="VideoWindow"
         WindowStyle="None"  
         WindowState="Maximized">
-    <Grid>
-        
+    <Grid x:Name="GridVideo">
+        <Image x:Name="Video" RenderTransformOrigin="0.5,0.5" Margin="30">
+            <Image.RenderTransform>
+                <ScaleTransform ScaleX="-1"/>
+            </Image.RenderTransform>
+        </Image>
+        <Button x:Name="VideoButton" Height="200" Width="200" Click="Video_Button_Click"  VerticalAlignment="Bottom">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="pictures/Camera.png"/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <Button x:Name="CancelButton" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
+            <Button.Background>
+                <SolidColorBrush Color="Red" Opacity="0.3" />
+            </Button.Background>
+        </Button>
     </Grid>
+
 </Window>

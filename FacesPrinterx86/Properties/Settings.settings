@@ -6,13 +6,13 @@
       <Value Profile="(Default)">net.pipe://localhost/Printerx86</Value>
     </Setting>
     <Setting Name="LandscapeTemplatePath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">LandscapeNoubelAir.lbx</Value>
+      <Value Profile="(Default)">LandscapeCSWedding.lbx</Value>
     </Setting>
     <Setting Name="Url" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://www.koxigru.net/noubelair/index.html?path=</Value>
+      <Value Profile="(Default)">http://www.koxigru.net/cswedding/index.html?path=</Value>
     </Setting>
     <Setting Name="PortraitTemplatePath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">PortraitNoubelAir.lbx</Value>
+      <Value Profile="(Default)">PortraitCSWedding.lbx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

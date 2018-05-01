@@ -24,7 +24,7 @@ namespace FacesPrinterx86
             try
             {
                 WinConsole.WriteLine("Print :" + photo );
-                Printer.print(photo, angle);
+                Printer.Print(photo, angle);
                 return true;
             }
             catch (Exception ex)

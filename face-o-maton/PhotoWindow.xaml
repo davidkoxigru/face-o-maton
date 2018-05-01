@@ -3,19 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:face_o_maton"
         mc:Ignorable="d"
         Title="PhotoWindow"
         WindowStyle="None"  
-        WindowState="Maximized"
-        Loaded="PhotoWindow_Loaded">
+        WindowState="Maximized">
     <Grid x:Name="GridPhoto">
-        <Image x:Name="Photo" RenderTransformOrigin="0.5,0.5">
+        <Image x:Name="Photo" RenderTransformOrigin="0.5,0.5" Margin="30">
             <Image.RenderTransform>
                 <ScaleTransform ScaleX="-1"/>
             </Image.RenderTransform>
         </Image>
-        <Button Height="200" Width="200" Click="Photo_Button_Click" VerticalAlignment="Bottom">
+        <Button x:Name="PhotoButton" Height="200" Width="200" Click="Photo_Button_Click"  VerticalAlignment="Bottom">
             <Button.Template>
                 <ControlTemplate>
                     <Image Source="pictures/Photo.png"/>
@@ -23,7 +21,7 @@
             </Button.Template>
         </Button>
 
-        <Button  x:Name="Button_cancel" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
+        <Button x:Name="CancelButton" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
             <Button.Background>
                 <SolidColorBrush Color="Red" Opacity="0.3" />
             </Button.Background>

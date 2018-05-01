@@ -218,11 +218,11 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="LandscapeNoubelAir.lbx">
+    <None Include="LandscapeCSWedding.lbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="PortraitNoubelAir.lbx">
+    <None Include="PortraitCSWedding.lbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">

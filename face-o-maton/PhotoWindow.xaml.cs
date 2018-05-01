@@ -2,20 +2,13 @@
 using CameraControl.Devices.Classes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WebEye.Controls.Wpf.StreamPlayerControl;
 using Timer = System.Timers.Timer;
 
@@ -26,41 +19,29 @@ namespace face_o_maton
     /// </summary>
     public partial class PhotoWindow : Window
     {
-        public CameraDeviceManager DeviceManager { get; set; }
-
-        public ICameraDevice CameraDevice { get; set; }
-
         private Timer _timer = new Timer(1000 / 15);
 
-
-        public PhotoWindow()
+        public ICameraDevice CameraDevice { get; set; }
+        
+        public PhotoWindow(CameraDeviceManager DeviceManager)
         {
             InitializeComponent();
-            StartCamera();
-        }
-
-        void PhotoWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            StartLiveView();
-        }
-
-        private void StartCamera()
-        {
-            DeviceManager = new CameraDeviceManager();
-            DeviceManager.ConnectToCamera();
-            DeviceManager.SelectedCameraDevice = DeviceManager.ConnectedDevices.First();
-            DeviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
             CameraDevice = DeviceManager.SelectedCameraDevice;
         }
 
-        private void StartLiveView()
+        public void Open()
+        {
+            Show();
+            CancelButton.IsEnabled = true;
+            PhotoButton.IsEnabled = true;
+            CameraDevice.PhotoCaptured += DeviceManager_PhotoCaptured;
+            StartLiveView();
+        }
+
+        public void StartLiveView()
         {
             try
             {
-
-                if (!IsActive)
-                    return;
-
                 string resp = CameraDevice.GetProhibitionCondition(OperationEnum.LiveView);
                 if (string.IsNullOrEmpty(resp))
                 {
@@ -70,13 +51,14 @@ namespace face_o_maton
                 }
                 else
                 {
-                    Log.Error("Error starting live view " + resp);
+
+                    MessageBox.Show("Error starting live view " + resp);
                     _timer.Stop();
                 }
             }
             catch (Exception ex)
             {
-                Log.Error("Error starting live view ", ex);
+                MessageBox.Show("Error starting live view ", ex.ToString());
                 _timer.Stop();
             }
         }
@@ -107,7 +89,7 @@ namespace face_o_maton
                         }
                         else
                         {
-                            throw;
+                            Stop();
                         }
                     }
                 } while (retry && retryNum < 35);
@@ -115,11 +97,7 @@ namespace face_o_maton
                 if (CameraDevice.GetCapability(CapabilityEnum.LiveViewStream))
                 {
                     Application.Current.Dispatcher.BeginInvoke(new Action(
-                        () =>
-                        {
-                            _videoSource.StartPlay(new Uri(CameraDevice.GetLiveViewStream()));
-                            StaticHelper.Instance.SystemMessage = "Waiting for live view stream...";
-                        }));
+                        () => _videoSource.StartPlay(new Uri(CameraDevice.GetLiveViewStream()))));
                 }
                 else
                 {
@@ -131,8 +109,7 @@ namespace face_o_maton
             }
             catch (Exception exception)
             {
-                Log.Error("Unable to start liveview !", exception);
-                StaticHelper.Instance.SystemMessage = "Unable to start liveview ! " + exception.Message;
+                MessageBox.Show("Unable to start liveview ! ", exception.ToString());
             }
         }
 
@@ -163,22 +140,69 @@ namespace face_o_maton
                         LiveViewData.ImageData.Length - LiveViewData.ImageDataPosition));
 
                     GridPhoto.Dispatcher.Invoke(() => Photo.Source = BitmapUtils.BitmapToImageSource(bitmap));
-
-                    // IsMovieRecording = LiveViewData.MovieIsRecording;
-
                 }
             }
             catch (Exception)
             {
-
-
             }
         }
 
-        void DeviceManager_CameraDisconnected(ICameraDevice cameraDevice)
+        private void StopLiveView()
         {
-            // TODO Display error;
+            try
+            {
+                _timer.Stop();
+                var LiveViewData = CameraDevice.GetLiveViewImage();
+                if (LiveViewData.IsLiveViewRunning)
+                {
+                    CameraDevice.StopLiveView();
+                }
+            }
+            catch
+            {
+                // Do nothing
+            }
         }
+        private void Photo_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PhotoButton.IsEnabled = false;
+            PhotoCapture();
+        }
+
+        private void PhotoCapture()
+        {
+            StopLiveView();
+            CameraDevice.WaitForReady();
+            Thread thread = new Thread(Capture);
+            thread.Start();
+        }
+
+        private void Capture()
+        {
+            bool retry;
+            int retryNum = 0;
+            do
+            {
+                retry = false;
+                try
+                {
+                    CameraDevice.CapturePhoto();
+                }
+                catch (DeviceException ex)
+                {
+                    Thread.Sleep(100);
+                    retryNum++;
+                    retry = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error occurred :" + ex.Message);
+                    Stop();
+                }
+
+            } while (retry && retryNum < 35);
+        }
+
 
         void DeviceManager_PhotoCaptured(object sender, PhotoCapturedEventArgs eventArgs)
         {
@@ -194,77 +218,102 @@ namespace face_o_maton
                 return;
             try
             {
+                eventArgs.CameraDevice.IsBusy = true;
                 var date = DateTime.Now.ToString("yyyyMMddHHmmssffff");
                 var fileName = Properties.Settings.Default.FacesPath + date + ".jpg";
-                // if file exist try to generate a new filename to prevent file lost. 
-                // This useful when camera is set to record in ram the the all file names are same.
-                if (File.Exists(fileName))
-                    fileName =
-                      StaticHelper.GetUniqueFilename(
-                        System.IO.Path.GetDirectoryName(fileName) + "\\" + System.IO.Path.GetFileNameWithoutExtension(fileName) + "_", 0,
-                        System.IO.Path.GetExtension(fileName));
 
                 // check the folder of filename, if not found create it
-                if (!Directory.Exists(System.IO.Path.GetDirectoryName(fileName)))
+                if (!Directory.Exists(Path.GetDirectoryName(fileName)))
                 {
-                    Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileName));
                 }
-                eventArgs.CameraDevice.TransferFile(eventArgs.Handle, fileName);
-                // the IsBusy may used internally, if file transfer is done should set to false  
+
+                string tempFile = Path.GetTempFileName();
+
+                if (File.Exists(tempFile))
+                    File.Delete(tempFile);
+
+                Stopwatch stopWatch = new Stopwatch();
+                // transfer file from camera  
+                // in this way if the session folder is used as hot folder will prevent write errors
+                stopWatch.Start();
+                eventArgs.CameraDevice.TransferFile(eventArgs.Handle, tempFile);
+                eventArgs.CameraDevice.ReleaseResurce(eventArgs.Handle);
                 eventArgs.CameraDevice.IsBusy = false;
+                stopWatch.Stop();
+
+                if (!eventArgs.CameraDevice.CaptureInSdRam)
+                    eventArgs.CameraDevice.DeleteObject(new DeviceObject() { Handle = eventArgs.Handle });
+
+                File.Copy(tempFile, fileName);
+
+                WaitForFile(fileName);
+
                 GridPhoto.Dispatcher.Invoke(() => Photo.Source = new BitmapImage(new Uri(fileName)));
+
+
+                // TODO Move print function
+                PrintSticker(fileName);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 eventArgs.CameraDevice.IsBusy = false;
-                MessageBox.Show("Error download photo from camera :\n" + exception.Message);
+                MessageBox.Show("Error download photo from camera :\n" + ex.Message);
+                Stop();
             }
         }
 
-        private void Photo_Button_Click(object sender, RoutedEventArgs e)
+        private static void PrintSticker(string fileName)
         {
-            CameraDevice.StopLiveView();
-            CameraDevice.AutoFocus();
-            Thread thread = new Thread(Capture);
-            thread.Start();
+            List<Tuple<string, int>> ps = new List<Tuple<string, int>>
+                {
+                    Tuple.Create(fileName, 0)
+                };
+            FacesPrinter.Print(ps);
         }
 
-        private void Capture()
+        public static void WaitForFile(string file)
         {
-            bool retry;
-            do
+            if (!File.Exists(file))
+                return;
+            int retry = 15;
+            while (IsFileLocked(file) && retry > 0)
             {
-                retry = false;
-                try
-                {
-                    DeviceManager.SelectedCameraDevice.CapturePhoto();
-                }
-                catch (DeviceException exception)
-                {
-                    // if device is bussy retry after 100 miliseconds
-                    if (exception.ErrorCode == ErrorCodes.MTP_Device_Busy ||
-                        exception.ErrorCode == ErrorCodes.ERROR_BUSY)
-                    {
-                        // !!!!this may cause infinite loop
-                        Thread.Sleep(100);
-                        retry = true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error occurred :" + exception.Message);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error occurred :" + ex.Message);
-                }
+                Thread.Sleep(100);
+                retry--;
+            }
+        }
 
-            } while (retry);
+        public static bool IsFileLocked(string file)
+        {
+            FileStream stream = null;
+            try
+            {
+                stream = File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
         }
 
         private void Button_cancel_Click(object sender, RoutedEventArgs e)
         {
-            CameraDevice.StopLiveView();
+            Stop();
+        }
+
+        private void Stop()
+        {
+            StopLiveView();
+            CameraDevice.PhotoCaptured -= DeviceManager_PhotoCaptured;
             Hide();
         }
     }

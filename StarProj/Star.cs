@@ -164,9 +164,14 @@ namespace StarProj
 
         private Image FastLoad(string path)
         {
-            
-            using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(path)))
-                return Image.FromStream(ms);
+            try
+            {
+                using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(path)))
+                    return Image.FromStream(ms);
+            } catch
+            {
+                return null;
+            }
         }
 
         private List<List<String>> DirSearch(string sDir, string filter, string discriminator, Boolean filterFound)

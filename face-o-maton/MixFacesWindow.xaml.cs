@@ -18,19 +18,20 @@ namespace face_o_maton
         {
             InitializeComponent();
 
-            enableButtonStep1();
-            disableButtonStep1();
+            EnableButtonStep1();
+            DisableButtonStep1();
 
             _facesAnim = new FacesAnim();
             _facesAnim.Initialize(DisplayImage, (int)this.Width, (int)this.Height);
         }
 
-        public void Start()
+        public void Open()
         {
             _facesAnim.Start();
+            Show();
         }
 
-        private void enableButtonStep1()
+        private void EnableButtonStep1()
         {
             Button_change_left.IsEnabled = true;
             Button_change_left.Opacity = 100;
@@ -40,7 +41,7 @@ namespace face_o_maton
             Button_stop.Opacity = 100;
         }
 
-        private void disableButtonStep1()
+        private void DisableButtonStep1()
         {
             Button_cancel.IsEnabled = false;
             Button_cancel.Opacity = 0;
@@ -48,7 +49,7 @@ namespace face_o_maton
             Button_print.Opacity = 0;
         }
 
-        private void enableButtonsStep2()
+        private void EnableButtonsStep2()
         {
             Button_cancel.IsEnabled = true;
             Button_cancel.Opacity = 100;
@@ -56,7 +57,7 @@ namespace face_o_maton
             Button_print.Opacity = 100;
         }
 
-        private void disableButtonsStep2()
+        private void DisableButtonsStep2()
         {
             Button_change_left.IsEnabled = false;
             Button_change_left.Opacity = 0;
@@ -79,15 +80,15 @@ namespace face_o_maton
         private void Button_stop_Click(object sender, RoutedEventArgs e)
         {
             _facesAnim.Stop();
-            enableButtonsStep2();
-            disableButtonsStep2();
+            EnableButtonsStep2();
+            DisableButtonsStep2();
         }
 
         private void Button_cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            enableButtonStep1();
-            disableButtonStep1();
+            Hide();
+            EnableButtonStep1();
+            DisableButtonStep1();
         }
 
         private void Button_print_Click(object sender, RoutedEventArgs e)

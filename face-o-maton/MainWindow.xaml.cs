@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CameraControl.Devices;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace face_o_maton
 {
@@ -20,33 +10,50 @@ namespace face_o_maton
     /// </summary>
     public partial class MainWindow : Window
     {
-        VideoWindow videoWindow;
         PhotoWindow photoWindow;
+        VideoWindow videoWindow;
         MixFacesWindow mixFacesWindow;
+
+        public CameraDeviceManager DeviceManager;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            videoWindow = new VideoWindow();
-            photoWindow = new PhotoWindow();
+            StartCamera();
+            videoWindow = new VideoWindow(DeviceManager);
+            photoWindow = new PhotoWindow(DeviceManager);
             mixFacesWindow = new MixFacesWindow();
         }
 
         private void Video_Button_Click(object sender, RoutedEventArgs e)
         {
-            videoWindow.Show();
+            videoWindow.Open();
         }
 
         private void Photo_Button_Click(object sender, RoutedEventArgs e)
         {
-            photoWindow.Show();
+            photoWindow.Open();
         }
 
         private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
         {
-            mixFacesWindow.Show();
-            mixFacesWindow.Start();
+            mixFacesWindow.Open();
+        }
+
+        private void StartCamera()
+        {
+            try
+            {
+                DeviceManager = new CameraDeviceManager();
+                DeviceManager.CloseAll();
+                DeviceManager.ConnectToCamera();
+                DeviceManager.SelectedCameraDevice = DeviceManager.ConnectedDevices.First();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Vérifier l'appareil photo");
+            }
         }
     }
 }

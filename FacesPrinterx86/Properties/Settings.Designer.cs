@@ -34,7 +34,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("LandscapeNoubelAir.lbx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("LandscapeCSWedding.lbx")]
         public string LandscapeTemplatePath {
             get {
                 return ((string)(this["LandscapeTemplatePath"]));
@@ -43,7 +43,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://www.koxigru.net/noubelair/index.html?path=")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://www.koxigru.net/cswedding/index.html?path=")]
         public string Url {
             get {
                 return ((string)(this["Url"]));
@@ -52,7 +52,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("PortraitNoubelAir.lbx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("PortraitCSWedding.lbx")]
         public string PortraitTemplatePath {
             get {
                 return ((string)(this["PortraitTemplatePath"]));

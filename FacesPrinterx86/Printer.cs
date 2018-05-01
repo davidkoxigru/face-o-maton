@@ -10,7 +10,7 @@ namespace FacesPrinterx86
 {
     public class Printer
     {
-        public static void print(string photo, int angle)
+        public static void Print(string photo, int angle)
         {
             String templatePath ;
             if (angle == 0)
@@ -23,7 +23,7 @@ namespace FacesPrinterx86
                 templatePath = Properties.Settings.Default.PortraitTemplatePath;
             }
             
-            var doc = new bpac.DocumentClass();
+            var doc = new DocumentClass();
             if (doc.Open(templatePath) != false)
             {
                 QrEncoder qrEncoder = new QrEncoder(ErrorCorrectionLevel.M);
