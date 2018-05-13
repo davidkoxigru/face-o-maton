@@ -18,17 +18,27 @@ namespace face_o_maton
         {
             InitializeComponent();
 
+#if !DEBUG
+            Topmost = true;
+#endif
+
             EnableButtonStep1();
             DisableButtonStep1();
 
             _facesAnim = new FacesAnim();
-            _facesAnim.Initialize(DisplayImage, (int)this.Width, (int)this.Height);
+            _facesAnim.Initialize(DisplayImage, (int)ImageMixFaces.Width, (int)ImageMixFaces.Height);
         }
 
         public void Open()
         {
-            _facesAnim.Start();
-            Show();
+            try
+            {
+                _facesAnim.Start();
+                Show();
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Error ", ex.ToString());
+            }
         }
 
         private void EnableButtonStep1()
@@ -94,15 +104,10 @@ namespace face_o_maton
         private void Button_print_Click(object sender, RoutedEventArgs e)
         {
             // Print image 
-
             Tuple<Bitmap, InterfaceProj.Json> imageAnim = _facesAnim.GetPrintImage();
             var filePath = _facesAnim.Save(imageAnim);
-
-            List<Tuple<string, int>> ps = new List<Tuple<string, int>>
-            {
-                Tuple.Create(filePath + @".jpg", imageAnim.Item2.angle)
-            };
-            FacesPrinter.Print(ps);
+            
+            FacesPrinter.PrintSticker(new List<String> { filePath + @".jpg" }, imageAnim.Item2.angle);
         }
 
         private void DisplayImage(Bitmap image)

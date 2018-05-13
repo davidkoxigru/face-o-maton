@@ -19,12 +19,12 @@ namespace FacesPrinterx86
     {
         #region IFacesPrinterx86Interfaces Members
 
-        public bool Print(string photo, int angle)
+        public bool Print(List<String> photos, int angle)
         {
             try
             {
-                WinConsole.WriteLine("Print :" + photo );
-                Printer.Print(photo, angle);
+                photos.ForEach(p => WinConsole.WriteLine("Print :" + p));
+                Printer.Print(photos, angle);
                 return true;
             }
             catch (Exception ex)

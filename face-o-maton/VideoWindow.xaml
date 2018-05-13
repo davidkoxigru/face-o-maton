@@ -14,19 +14,12 @@
                 <ScaleTransform ScaleX="-1"/>
             </Image.RenderTransform>
         </Image>
-        <Button x:Name="VideoButton" Height="200" Width="200" Click="Video_Button_Click"  VerticalAlignment="Bottom">
-            <Button.Template>
-                <ControlTemplate>
-                    <Image Source="pictures/Camera.png"/>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
 
-        <Button x:Name="CancelButton" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
-            <Button.Background>
-                <SolidColorBrush Color="Red" Opacity="0.3" />
-            </Button.Background>
-        </Button>
+
+        <TextBlock x:Name="CounterBeforeVideo" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="192"  Height="200" Width="600" VerticalAlignment="Center" TextAlignment="Center"></TextBlock>
+        <TextBlock x:Name="CounterVideo" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="96"  Height="100" Width="600" VerticalAlignment="Bottom" TextAlignment="Center"></TextBlock>
+        <TextBlock x:Name="ErrorMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
+
     </Grid>
 
 </Window>

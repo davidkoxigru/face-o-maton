@@ -10,6 +10,6 @@ namespace FacesPrinterInterface
     public interface IFacesPrinterContract
     {
         [OperationContract]
-        bool Print(string photo, int angle);
+        bool Print(List<String> photos, int angle);
     }
 }

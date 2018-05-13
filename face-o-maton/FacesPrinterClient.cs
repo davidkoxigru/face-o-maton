@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using FacesPrinterInterface;
 
@@ -21,11 +22,11 @@ namespace face_o_maton
         static Lazy<FacesPrinterClient> _instance = new Lazy<FacesPrinterClient>(() => new FacesPrinterClient());
         public static FacesPrinterClient Instance { get { return _instance.Value; } }
 
-        public static bool Print(String photo, int angle)
+        public static bool Print(List<String> photos, int angle)
         {
             try
             {
-                return Instance.Call.Print(photo, angle);
+                return Instance.Call.Print(photos, angle);
             }
             catch
             {

@@ -43,7 +43,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://www.koxigru.net/cswedding/index.html?path=")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://www.koxigru.net/cswedding/index.html?photos=")]
         public string Url {
             get {
                 return ((string)(this["Url"]));
@@ -56,6 +56,15 @@ namespace FacesPrinterx86.Properties {
         public string PortraitTemplatePath {
             get {
                 return ((string)(this["PortraitTemplatePath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Landscape4CSWedding.lbx")]
+        public string Landscape4CSWeddingPath {
+            get {
+                return ((string)(this["Landscape4CSWeddingPath"]));
             }
         }
     }

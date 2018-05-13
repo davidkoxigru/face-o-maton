@@ -68,16 +68,18 @@ namespace PopProj
         {
             // Get nbElements
             var face = FastLoad(_faces.ElementAt(0));
-
-            float width = (float)(face.Width / _factor);
-            float height = (float)(face.Height / _factor);
-            _nbX = (int)(_screenWidth / width);
-            _nbY = (int)(_screenHeight / height);
-            _posX = (int)(_screenWidth - _nbX * width) / 2;
-            _posY = (int)(_screenHeight - _nbY * height) / 2;
-            _pixelFormat = face.PixelFormat;
-            _horizontalResolution = face.HorizontalResolution;
-            _verticalResolution = face.VerticalResolution;
+            if (face != null)
+            {
+                float width = (float)(face.Width / _factor);
+                float height = (float)(face.Height / _factor);
+                _nbX = (int)(_screenWidth / width);
+                _nbY = (int)(_screenHeight / height);
+                _posX = (int)(_screenWidth - _nbX * width) / 2;
+                _posY = (int)(_screenHeight - _nbY * height) / 2;
+                _pixelFormat = face.PixelFormat;
+                _horizontalResolution = face.HorizontalResolution;
+                _verticalResolution = face.VerticalResolution;
+            }
         }
 
         public Boolean Ready()
@@ -127,8 +129,13 @@ namespace PopProj
 
         private Image FastLoad(string path)
         {
-            using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(path)))
-                return Image.FromStream(ms);
+            try
+            {
+                using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(path)))
+                    return Image.FromStream(ms);
+            } catch {
+                return null;
+            }
         }
 
         public Bitmap GetNextImage()
@@ -157,13 +164,20 @@ namespace PopProj
                 for (var j = 0; j < _nbY; j++)
                 {
                     var path = _faces.ElementAt(_rndCreateImage.Next(0, _faces.Count() - 1));
-                    json.addItem(path, "Tête " + (i+1) + "-" + (j+1));
+                    json.addItem(path, "Tête " + (i + 1) + "-" + (j + 1));
 
                     var face = FastLoad(path);
-                    var filter = new HueModifier(_rndCreateImage.Next(0, 359));
-                    float width = (float)(face.Width / factor);
-                    float height = (float)(face.Height / factor);
-                    graphics.DrawImage(filter.Apply(new Bitmap(face)), _posX + i * width, _posY + j * height, width, height);
+                    if (face != null)
+                    {
+                        try
+                        {
+                            var filter = new HueModifier(_rndCreateImage.Next(0, 359));
+                            float width = (float)(face.Width / factor);
+                            float height = (float)(face.Height / factor);
+                            graphics.DrawImage(filter.Apply(new Bitmap(face)), _posX + i * width, _posY + j * height, width, height);
+                        }
+                        catch { }
+                    }
                 }
             }
 

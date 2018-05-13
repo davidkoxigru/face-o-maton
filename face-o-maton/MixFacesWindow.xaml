@@ -9,7 +9,7 @@
         AllowsTransparency="True" 
         WindowState="Maximized" Width="1920" Height="1080">
     <Grid x:Name="GridMixFaces">
-        <Image x:Name="ImageMixFaces"/>
+        <Image x:Name="ImageMixFaces" Width="1200" Height="800"/>
 
         <Button x:Name="Button_change_left" Content="Button" Width="150" HorizontalAlignment="Left" Click="Button_change_left_Click">
             <Button.Background>
@@ -21,18 +21,18 @@
                 <SolidColorBrush Color="Blue" Opacity="0.3" />
             </Button.Background>
         </Button>
-        <Button  x:Name="Button_stop" Content="Button" Width="200" HorizontalAlignment="Center" Height="200" VerticalAlignment="Bottom" Click="Button_stop_Click">
+        <Button  x:Name="Button_stop" Content="Button" HorizontalAlignment="Center" Width="150" Height="150" VerticalAlignment="Bottom" Click="Button_stop_Click">
             <Button.Background>
                 <SolidColorBrush Color="Red" Opacity="0.3" />
             </Button.Background>
         </Button>
 
-        <Button  x:Name="Button_cancel" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
+        <Button  x:Name="Button_cancel" Content="Button" Width="150" Height="150" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
             <Button.Background>
                 <SolidColorBrush Color="Red" Opacity="0.3" />
             </Button.Background>
         </Button>
-        <Button  x:Name="Button_print" Content="Button" Width="200" Height="200" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_print_Click">
+        <Button  x:Name="Button_print" Content="Button" Width="150" Height="150" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_print_Click">
             <Button.Background>
                 <SolidColorBrush Color="Green" Opacity="0.3" />
             </Button.Background>

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        x:Name="WindowPhoto"
         Title="PhotoWindow"
         WindowStyle="None"  
         WindowState="Maximized">
@@ -13,18 +14,54 @@
                 <ScaleTransform ScaleX="-1"/>
             </Image.RenderTransform>
         </Image>
-        <Button x:Name="PhotoButton" Height="200" Width="200" Click="Photo_Button_Click"  VerticalAlignment="Bottom">
-            <Button.Template>
-                <ControlTemplate>
-                    <Image Source="pictures/Photo.png"/>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
 
-        <Button x:Name="CancelButton" Content="Button" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
+        <Grid x:Name="FourPictures">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Image Grid.Column="0" Grid.Row="0" x:Name="Photo0" RenderTransformOrigin="0.5,0.5" Margin="150,30,5,5">
+                <Image.RenderTransform>
+                    <ScaleTransform ScaleX="-1"/>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="Photo1" Grid.Column="1" Grid.Row="0" RenderTransformOrigin="0.5,0.5" Margin="5,30,150,5">
+                <Image.RenderTransform>
+                    <ScaleTransform ScaleX="-1"/>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="Photo2" Grid.Column="0" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Margin="150,5,5,30">
+                <Image.RenderTransform>
+                    <ScaleTransform ScaleX="-1"/>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="Photo3" Grid.Column="1" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Margin="5,5,150,30">
+                <Image.RenderTransform>
+                    <ScaleTransform ScaleX="-1"/>
+                </Image.RenderTransform>
+            </Image>
+        </Grid>
+
+        <Button x:Name="PrintButton" Content="Button" Width="150" Height="150" VerticalAlignment="Bottom" Click="Button_print_Click" HorizontalAlignment="Right">
+            <Button.Background>
+                <SolidColorBrush Color="Green" Opacity="0.3" />
+            </Button.Background>
+        </Button>
+        <Button x:Name="CancelButton" Content="Button" Width="150" Height="150" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
             <Button.Background>
                 <SolidColorBrush Color="Red" Opacity="0.3" />
             </Button.Background>
         </Button>
+
+        <TextBlock x:Name="Counter" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="192"  Height="200" Width="600" VerticalAlignment="Center" TextAlignment="Center"></TextBlock>
+
+        <TextBlock x:Name="WatchMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Regardez la caméra"/></TextBlock>
+        <TextBlock x:Name="PrintMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Impression"/></TextBlock>
+        <TextBlock x:Name="ErrorMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
+
     </Grid>
 </Window>

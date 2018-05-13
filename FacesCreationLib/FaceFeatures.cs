@@ -139,10 +139,11 @@ namespace FacesCreationLib
                 if (!NoseLocation.IsEmpty)
                 {
                     // Check center         
-                    if (Math.Abs((FaceLocation.X + FaceLocation.Width / 2) - (NoseLocation.X + NoseLocation.Width / 2)) > FaceLocation.Width / 50)
-                    {
-                        return false;
-                    }
+                    // TODO A revoir
+                    //if (Math.Abs((FaceLocation.X + FaceLocation.Width / 2) - (NoseLocation.X + NoseLocation.Width / 2)) > FaceLocation.Width / 50)
+                    //{
+                    //    return false;
+                    //}
 
                     var noseEyesDist = NoseLocation.Y + NoseLocation.Height - eyesRef;
                 }
@@ -151,11 +152,12 @@ namespace FacesCreationLib
                 if (!MouthLocation.IsEmpty)
                 {
 
-                    // Check center         
-                    if (Math.Abs((FaceLocation.X + FaceLocation.Width / 2) - (MouthLocation.X + MouthLocation.Width / 2)) > FaceLocation.Width / 40)
-                    {
-                        return false;
-                    }
+                    // Check center     
+                    // TODO A revoir
+                    //if (Math.Abs((FaceLocation.X + FaceLocation.Width / 2) - (MouthLocation.X + MouthLocation.Width / 2)) > FaceLocation.Width / 40)
+                    //{
+                    //    return false;
+                    //}
 
                     var mouthEyesDist = MouthLocation.Y + MouthLocation.Height / 2 - eyesRef;
                  }
@@ -308,9 +310,11 @@ namespace FacesCreationLib
 
         private static Rectangle CalcRectangleSize(Rectangle rectangleIn, float scale, int width, int height)
         {
-            Rectangle rectangleOut = new Rectangle();
-            rectangleOut.Height = (int)(height / scale);
-            rectangleOut.Width = (int)(width / scale);
+            Rectangle rectangleOut = new Rectangle
+            {
+                Height = (int)(height / scale),
+                Width = (int)(width / scale)
+            };
             rectangleOut.X = rectangleIn.X + (rectangleIn.Width - rectangleOut.Width) / 2;
             rectangleOut.Y = rectangleIn.Y + (rectangleIn.Height - rectangleOut.Height) / 2;
             return rectangleOut;
@@ -395,7 +399,7 @@ namespace FacesCreationLib
 
             if (!nameFacePart.Equals("face"))
             {
-                var filter = FacesCreationLib.Properties.Settings.Default.Filter;
+                var filter = Properties.Settings.Default.Filter;
 
                 if (!Directory.Exists(dirPath + @"/" + filter))
                 {
@@ -438,7 +442,7 @@ namespace FacesCreationLib
             }
 
             return image.Copy(rect)
-                .Resize((int)(rect.Width * scale), (int)(rect.Height * scale), Emgu.CV.CvEnum.INTER.CV_INTER_CUBIC);
+                .Resize((int)(rect.Width * scale), (int)(rect.Height * scale), Emgu.CV.CvEnum.Inter.Cubic);
         }
 
         public static Bitmap SetOnTarget(Image<Bgr, byte> image, int targetWidth, int targetHeight, int destX, int destY)
@@ -475,12 +479,20 @@ namespace FacesCreationLib
 
         public static void RunPhotoshopAction(string orig, string target, string action, string group)
         {
-            Application app = new Application();
-            var doc = app.Open(orig);
-            app.DoAction(action, group);
-            var options = new PNGSaveOptions();
-            doc.SaveAs(target, options, true, PsExtensionType.psLowercase);
-            doc.Close(PsSaveOptions.psDoNotSaveChanges);
+            /* TODO Update Photoshop
+            try { 
+                Application app = new Application();
+                var doc = app.Open(orig);
+                app.DoAction(action, group);
+                var options = new PNGSaveOptions();
+                doc.SaveAs(target, options, true, PsExtensionType.psLowercase);
+                doc.Close(PsSaveOptions.psDoNotSaveChanges);
+            }
+            catch 
+            {
+                
+            }
+            */
         }
     }
 }

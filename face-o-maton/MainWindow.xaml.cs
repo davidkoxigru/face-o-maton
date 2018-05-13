@@ -1,6 +1,8 @@
 ﻿using CameraControl.Devices;
 using System;
+using System.IO;
 using System.Linq;
+using System.Management;
 using System.Windows;
 
 namespace face_o_maton
@@ -20,6 +22,10 @@ namespace face_o_maton
         {
             InitializeComponent();
 
+#if !DEBUG
+            Topmost = true;
+#endif
+
             StartCamera();
             videoWindow = new VideoWindow(DeviceManager);
             photoWindow = new PhotoWindow(DeviceManager);
@@ -31,9 +37,32 @@ namespace face_o_maton
             videoWindow.Open();
         }
 
-        private void Photo_Button_Click(object sender, RoutedEventArgs e)
+        private void Photo_Button_1_Sticker_1_Click(object sender, RoutedEventArgs e)
         {
-            photoWindow.Open();
+            photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 1);
+        }
+        private void Photo_Button_1_Sticker_4_Click(object sender, RoutedEventArgs e)
+        {
+            photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 4);
+        }
+
+        private void Photo_Button_4_Sticker_4_Click(object sender, RoutedEventArgs e)
+        {
+            photoWindow.Open(4, FacesPrinter.PrinterType.Sticker, 4);
+        }
+
+        private void Photo_Button_1_Color_1_Click(object sender, RoutedEventArgs e)
+        {
+            photoWindow.Open(1, FacesPrinter.PrinterType.Color, 1);
+        }
+
+        private void Photo_Button_1_Color_4_Click(object sender, RoutedEventArgs e)
+        {
+            photoWindow.Open(1, FacesPrinter.PrinterType.Color, 4);
+        }
+        private void Photo_Button_4_Color_4_Click(object sender, RoutedEventArgs e)
+        {
+            photoWindow.Open(4, FacesPrinter.PrinterType.Color, 4);
         }
 
         private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
@@ -55,5 +84,32 @@ namespace face_o_maton
                 MessageBox.Show(ex.Message, "Vérifier l'appareil photo");
             }
         }
+
+        private void CheckPrinters()
+        {
+            string printerName = @"Canon SELPHY CP1300";
+            string query = string.Format("SELECT * from Win32_Printer WHERE Name LIKE '%{0}'", printerName);
+            String result = String.Empty;
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
+            using (ManagementObjectCollection coll = searcher.Get())
+            {
+                try
+                {
+                    foreach (ManagementObject printer in coll)
+                    {
+                        foreach (PropertyData property in printer.Properties)
+                        {
+                            result += string.Format("{0}: {1}", property.Name, property.Value) + Environment.NewLine;
+                        }
+                    }
+                }
+                catch (ManagementException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            MessageBox.Show(result);
+        }
+        
     }
 }

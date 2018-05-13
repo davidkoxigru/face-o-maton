@@ -68,6 +68,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Channels" />
     <Reference Include="System.Xml" />
@@ -173,6 +174,10 @@
     <Resource Include="pictures\Photo.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FacesCreationLib\FacesCreationLib.csproj">
+      <Project>{56d27c6d-eba6-4fc2-ac8f-6d203805b91e}</Project>
+      <Name>FacesCreationLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FacesPrinterInterface\FacesPrinterInterface.csproj">
       <Project>{91c2b8ad-bbaf-46d6-b32d-04655d897042}</Project>
       <Name>FacesPrinterInterface</Name>
@@ -204,6 +209,9 @@
     </Content>
     <Content Include="EdsImage.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pictures\CSWedding.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

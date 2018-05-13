@@ -1,21 +1,11 @@
 ﻿using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WebEye.Controls.Wpf.StreamPlayerControl;
 
 namespace face_o_maton
@@ -25,23 +15,63 @@ namespace face_o_maton
     /// </summary>
     public partial class VideoWindow : Window
     {
+        private Timer _timerStartVideo;
+        private Timer _timerVideo;
+
+        private DateTime _recordStartTime;
+        private bool _recording;
+
+        private System.Timers.Timer _timerBeforeStopping = new System.Timers.Timer(2000);
+
         public ICameraDevice CameraDevice { get; set; }
 
         public VideoWindow(CameraDeviceManager DeviceManager)
         {
             InitializeComponent();
 
+#if !DEBUG
+            Topmost = true;
+#endif
+
             CameraDevice = DeviceManager.SelectedCameraDevice;
+
         }
 
         public void Open()
         {
             Show();
-            VideoButton.IsEnabled = true;
-            CancelButton.IsEnabled = true;
+            CounterBeforeVideo.Visibility = Visibility.Hidden;
+            ErrorMessage.Visibility = Visibility.Hidden;
+            CounterVideo.Visibility = Visibility.Hidden;
             StartLiveView();
+            LaunchTimerBeforeCapture(3);
         }
-        
+
+        private void LaunchTimerBeforeCapture(int duration)
+        {
+            StartLiveView();
+            CounterBeforeVideo.Visibility = Visibility.Visible;
+            CounterBeforeVideo.Text = duration.ToString();
+            _timerStartVideo = new Timer(OnTimerStartVideo, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+        }
+
+        private void OnTimerStartVideo(object status)
+        {
+            GridVideo.Dispatcher.Invoke(() =>
+            {
+                int counter = Int32.Parse(CounterBeforeVideo.Text);
+                if (counter-- > 1)
+                {
+                    CounterBeforeVideo.Text = counter.ToString();
+                }
+                else
+                {
+                    _timerStartVideo.Dispose();
+                    RecordMovie();
+                    CounterBeforeVideo.Visibility = Visibility.Hidden;
+                }
+            });
+        }
 
         private System.Timers.Timer _timer = new System.Timers.Timer(1000 / 15);
         public void StartLiveView()
@@ -57,14 +87,15 @@ namespace face_o_maton
                 }
                 else
                 {
-
-                    MessageBox.Show("Error starting live view " + resp);
+                    Log.Debug("Error starting live view " + resp);
+                    StopWithErrorMessage();
                     _timer.Stop();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error starting live view ", ex.ToString());
+                Log.Debug("Error starting live view " + ex.ToString());
+                StopWithErrorMessage();
                 _timer.Stop();
             }
         }
@@ -115,7 +146,8 @@ namespace face_o_maton
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Unable to start liveview ! ", exception.ToString());
+                Log.Debug("Unable to start liveview ! " + exception.ToString());
+                StopWithErrorMessage();
             }
         }
 
@@ -150,6 +182,7 @@ namespace face_o_maton
             }
             catch (Exception)
             {
+                StopWithErrorMessage();
             }
         }
 
@@ -171,19 +204,29 @@ namespace face_o_maton
         }
 
 
+        private void LaunchTimerVideo(int duration)
+        {
+            StartLiveView();
+            CounterVideo.Visibility = Visibility.Visible;
+            CounterVideo.Text = duration.ToString();
+            _timerStartVideo = new Timer(OnTimerVideo, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+        }
 
-
-
-
-
-
-
-
-
-
-        private DateTime _recordStartTime;
-        private bool _recording;
-        
+        private void OnTimerVideo(object status)
+        {
+            GridVideo.Dispatcher.Invoke(() =>
+            {
+                int counter = Int32.Parse(CounterVideo.Text);
+                if (counter-- > 0)
+                {
+                    CounterVideo.Text = counter.ToString();
+                }
+                else
+                {
+                    Stop();
+                }
+            });
+        }
 
         private void RecordMovie()
         {
@@ -192,17 +235,20 @@ namespace face_o_maton
                 string resp = _recording ? "" : CameraDevice.GetProhibitionCondition(OperationEnum.RecordMovie);
                 if (string.IsNullOrEmpty(resp))
                 {
+                    LaunchTimerVideo(10);
                     var thread = new Thread(RecordMovieThread);
                     thread.Start();
                 }
                 else
                 {
-                    // TODO
+                    Log.Debug("Error occurred");
+                    StopWithErrorMessage();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Start movie record error", ex.Message);
+                Log.Debug("Error occurred :" + ex.Message);
+                StopWithErrorMessage();
             }
         }
 
@@ -238,20 +284,30 @@ namespace face_o_maton
                 MessageBox.Show("Recording error", exception.Message);
             }
         }
-
-        private void Video_Button_Click(object sender, RoutedEventArgs e)
+        private void StopWithErrorMessage()
         {
-            VideoButton.IsEnabled = false;
+            // Display error message
+            ErrorMessage.Visibility = Visibility.Visible;
 
-            // TODO Count to 3 before recording
-            RecordMovie();
+            // Mask all
+            CounterBeforeVideo.Visibility = Visibility.Hidden;
+            CounterVideo.Visibility = Visibility.Hidden;
+            Video.Visibility = Visibility.Hidden;
 
-            // TODO Max time 10 seconds
+            StopAfterTimer();
         }
 
-        private void Button_cancel_Click(object sender, RoutedEventArgs e)
+        private void StopAfterTimer()
         {
-            Stop();
+            // Launch timer
+            _timerBeforeStopping.Elapsed += TimerBeforeStoppingElapsed;
+            _timerBeforeStopping.Start();
+        }
+
+        void TimerBeforeStoppingElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            _timerBeforeStopping.Stop();
+            GridVideo.Dispatcher.Invoke(() => Stop());
         }
 
         private void Stop()

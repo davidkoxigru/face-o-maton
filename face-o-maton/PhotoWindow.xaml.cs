@@ -1,9 +1,12 @@
 ﻿using CameraControl.Devices;
 using CameraControl.Devices.Classes;
+using FacesCreationLib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Drawing.Printing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,23 +22,84 @@ namespace face_o_maton
     /// </summary>
     public partial class PhotoWindow : Window
     {
-        private Timer _timer = new Timer(1000 / 15);
-
-        public ICameraDevice CameraDevice { get; set; }
+        private Timer _timerLiveView = new Timer(1000 / 15); // Display 15 images per seconds
+        private Timer _timerBeforeStopping = new Timer(2000);
+        private System.Threading.Timer _timerStartCapture;
+        private FacesPrinter.PrinterType _printer;
+        private int _nbPhotos;
+        private int _nbPrints;
+        private List<String> _photos;
         
+        public ICameraDevice CameraDevice { get; set; }
+
+        FacesCreation _facesCreation = new FacesCreation();
+
         public PhotoWindow(CameraDeviceManager DeviceManager)
         {
             InitializeComponent();
+
+#if !DEBUG
+            Topmost = true;
+#endif
+
             CameraDevice = DeviceManager.SelectedCameraDevice;
         }
 
-        public void Open()
+        public void Open(int nbPhotos, FacesPrinter.PrinterType printer, int nbPrints)
         {
+            _nbPhotos = nbPhotos;
+            _printer = printer;
+            _nbPrints = nbPrints;
+
             Show();
+            WatchMessage.Visibility = Visibility.Hidden;
+            ErrorMessage.Visibility = Visibility.Hidden;
+            PrintMessage.Visibility = Visibility.Hidden;
+            FourPictures.Visibility = Visibility.Hidden;
+            PrintButton.IsEnabled = false;
+            PrintButton.Visibility = Visibility.Hidden;
             CancelButton.IsEnabled = true;
-            PhotoButton.IsEnabled = true;
+            CancelButton.Visibility = Visibility.Hidden;
+            Photo.Visibility = Visibility.Visible;
             CameraDevice.PhotoCaptured += DeviceManager_PhotoCaptured;
+            
+            _photos = new List<string>();
+            CameraDevice.WaitForReady();
+
             StartLiveView();
+            LaunchTimerBeforeCapture(3);
+        }
+
+        private void LaunchTimerBeforeCapture(int duration)
+        {
+            StartLiveView();
+            WatchMessage.Visibility = Visibility.Hidden;
+            Photo.Visibility = Visibility.Visible;
+            Counter.Visibility = Visibility.Visible;
+            Counter.Text = duration.ToString();
+            _timerStartCapture = new System.Threading.Timer(OnTimerStartCapture, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+        }
+
+        private void OnTimerStartCapture(object status)
+        {
+            GridPhoto.Dispatcher.Invoke(() =>
+            {
+                int counter = Int32.Parse(Counter.Text);
+                if (counter-- > 1)
+                {
+                    Counter.Text = counter.ToString();
+                }
+                else
+                {
+                    _timerStartCapture.Dispose();
+                    StopLiveView();
+                    Counter.Visibility = Visibility.Hidden;
+                    Photo.Visibility = Visibility.Hidden;
+                    WatchMessage.Visibility = Visibility.Visible;
+                    CameraDevice.WaitForReady();
+                    PhotoCapture();
+                }
+            });
         }
 
         public void StartLiveView()
@@ -51,15 +115,14 @@ namespace face_o_maton
                 }
                 else
                 {
-
-                    MessageBox.Show("Error starting live view " + resp);
-                    _timer.Stop();
+                   Log.Debug("Error starting live view " + resp);
+                    _timerLiveView.Stop();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error starting live view ", ex.ToString());
-                _timer.Stop();
+                Log.Debug("Error starting live view " + ex.ToString());
+                _timerLiveView.Stop();
             }
         }
 
@@ -101,21 +164,21 @@ namespace face_o_maton
                 }
                 else
                 {
-                    _timer.Elapsed += _timer_Elapsed;
-                    _timer.Start();
+                    _timerLiveView.Elapsed += TimerLiveViewElapsed;
+                    _timerLiveView.Start();
                 }
 
                 Log.Debug("LiveView: Liveview start done");
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Unable to start liveview ! ", exception.ToString());
+                Log.Debug("Unable to start liveview ! " + exception.ToString());
             }
         }
 
-        void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        void TimerLiveViewElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            _timer.Stop();
+            _timerLiveView.Stop();
             Task.Factory.StartNew(GetLiveViewThread);
         }
 
@@ -123,7 +186,8 @@ namespace face_o_maton
         private void GetLiveViewThread()
         {
             Get();
-            _timer.Start();
+
+            _timerLiveView.Start();
         }
 
         void Get()
@@ -151,7 +215,7 @@ namespace face_o_maton
         {
             try
             {
-                _timer.Stop();
+                _timerLiveView.Stop();
                 var LiveViewData = CameraDevice.GetLiveViewImage();
                 if (LiveViewData.IsLiveViewRunning)
                 {
@@ -163,16 +227,9 @@ namespace face_o_maton
                 // Do nothing
             }
         }
-        private void Photo_Button_Click(object sender, RoutedEventArgs e)
-        {
-            PhotoButton.IsEnabled = false;
-            PhotoCapture();
-        }
-
+        
         private void PhotoCapture()
         {
-            StopLiveView();
-            CameraDevice.WaitForReady();
             Thread thread = new Thread(Capture);
             thread.Start();
         }
@@ -181,6 +238,7 @@ namespace face_o_maton
         {
             bool retry;
             int retryNum = 0;
+            int retryMax = 5;
             do
             {
                 retry = false;
@@ -196,13 +254,18 @@ namespace face_o_maton
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error occurred :" + ex.Message);
-                    Stop();
+                    Log.Debug("Error occurred :" + ex.Message);
+                    StopWithErrorMessage();
                 }
 
-            } while (retry && retryNum < 35);
-        }
+            } while (retry && retryNum < retryMax);
 
+            if (retryNum >= retryMax)
+            {
+                Log.Debug(retryMax + " errors occurred");
+                GridPhoto.Dispatcher.Invoke(() => StopWithErrorMessage());
+            }
+        }
 
         void DeviceManager_PhotoCaptured(object sender, PhotoCapturedEventArgs eventArgs)
         {
@@ -246,30 +309,62 @@ namespace face_o_maton
                     eventArgs.CameraDevice.DeleteObject(new DeviceObject() { Handle = eventArgs.Handle });
 
                 File.Copy(tempFile, fileName);
-
                 WaitForFile(fileName);
 
-                GridPhoto.Dispatcher.Invoke(() => Photo.Source = new BitmapImage(new Uri(fileName)));
-
-
-                // TODO Move print function
-                PrintSticker(fileName);
+                _photos.Add(fileName);
+                
+                if (_photos.Count < _nbPhotos)
+                {
+                    WindowPhoto.Dispatcher.Invoke(() => LaunchTimerBeforeCapture(2));
+                }
+                else
+                {
+                    _photos.ForEach(p => _facesCreation.EnqueueFileName(p));
+                    GridPhoto.Dispatcher.Invoke(() => DisplayPrintPhotos(_photos));
+                }
             }
             catch (Exception ex)
             {
                 eventArgs.CameraDevice.IsBusy = false;
-                MessageBox.Show("Error download photo from camera :\n" + ex.Message);
-                Stop();
+                Log.Debug("Error download photo from camera :\n" + ex.Message);
+                StopWithErrorMessage();
             }
         }
 
-        private static void PrintSticker(string fileName)
+        private void DisplayPhoto (String fileName) {
+            Photo.Visibility = Visibility.Visible;
+            Photo.Source = new BitmapImage(new Uri(fileName));
+            CancelButton.Visibility = Visibility.Visible;
+        }
+
+        private void DisplayPrintPhotos(List<String> photos)
         {
-            List<Tuple<string, int>> ps = new List<Tuple<string, int>>
-                {
-                    Tuple.Create(fileName, 0)
-                };
-            FacesPrinter.Print(ps);
+            WatchMessage.Visibility = Visibility.Hidden;
+
+            if (photos.Count == 1)
+            {
+                Photo.Visibility = Visibility.Visible;
+                Photo.Source = new BitmapImage(new Uri(photos[0]));
+            } else if (photos.Count == 4)
+            {
+                Photo.Visibility = Visibility.Hidden;
+                Photo0.Source = new BitmapImage(new Uri(photos[0]));
+                Photo1.Source = new BitmapImage(new Uri(photos[1]));
+                Photo2.Source = new BitmapImage(new Uri(photos[2]));
+                Photo3.Source = new BitmapImage(new Uri(photos[3]));
+                FourPictures.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Error
+                Stop();
+            }
+
+            PrintButton.IsEnabled= true;
+            PrintButton.Visibility = Visibility.Visible;
+
+            CancelButton.IsEnabled = true;
+            CancelButton.Visibility = Visibility.Visible;
         }
 
         public static void WaitForFile(string file)
@@ -305,9 +400,61 @@ namespace face_o_maton
             return false;
         }
 
+        private void Button_print_Click(object sender, RoutedEventArgs e)
+        {
+            // Display print message
+            PrintMessage.Visibility = Visibility.Visible;
+
+            // Mask all
+            PrintButton.IsEnabled = false;
+            PrintButton.Visibility = Visibility.Hidden;
+            CancelButton.IsEnabled = false;
+            CancelButton.Visibility = Visibility.Hidden;
+
+            FourPictures.Visibility = Visibility.Hidden;
+            Photo.Visibility = Visibility.Hidden;
+
+            Thread printThread = new Thread(() => FacesPrinter.Print(StopAfterTimer, _photos, _nbPrints, _printer));
+            printThread.Start();
+        }
+
         private void Button_cancel_Click(object sender, RoutedEventArgs e)
         {
             Stop();
+        }
+
+        private void StopWithErrorMessage()
+        {
+            // Display error message
+            ErrorMessage.Visibility = Visibility.Visible;
+
+            // Mask all
+            Counter.Visibility = Visibility.Hidden;
+            PrintMessage.Visibility = Visibility.Hidden;
+            WatchMessage.Visibility = Visibility.Hidden;
+
+            PrintButton.IsEnabled = false;
+            PrintButton.Visibility = Visibility.Hidden;
+            CancelButton.IsEnabled = false;
+            CancelButton.Visibility = Visibility.Hidden;
+
+            FourPictures.Visibility = Visibility.Hidden;
+            Photo.Visibility = Visibility.Hidden;
+
+            StopAfterTimer();
+        }
+
+        private void StopAfterTimer()
+        {
+            // Launch timer
+            _timerBeforeStopping.Elapsed += TimerBeforeStoppingElapsed;
+            _timerBeforeStopping.Start();
+        }
+
+        void TimerBeforeStoppingElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            _timerBeforeStopping.Stop();
+            GridPhoto.Dispatcher.Invoke(() => Stop());
         }
 
         private void Stop()
