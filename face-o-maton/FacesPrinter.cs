@@ -16,19 +16,26 @@ namespace face_o_maton
             Color
         }
 
-        public static void Print(Action callback, List<String> photos, int nbPrints, PrinterType printer)
+        public static void Print(Action<Boolean> callback, List<String> photos, int nbPrints, PrinterType printer)
         {
-            if (PrinterType.Sticker == printer)
+            try
             {
-                PrintSticker(photos, nbPrints);
+                if (PrinterType.Sticker == printer)
+                {
+                    PrintSticker(callback, photos, nbPrints);
+                }
+                else if (PrinterType.Color == printer)
+                {
+                    PrintColor(callback, photos, nbPrints);
+                }
             }
-            else if (PrinterType.Color == printer)
+            catch
             {
-                PrintColor(callback, photos, nbPrints);
+                callback(false);
             }
         }
 
-        private static void PrintColor(Action callback, List<String> photos, int nbPrints)
+        private static void PrintColor(Action<Boolean> callback, List<String> photos, int nbPrints)
         {
             PrintDocument pd = new PrintDocument();
             PrintController printController = new StandardPrintController();
@@ -58,7 +65,7 @@ namespace face_o_maton
 
             pd.EndPrint += (sender, args) =>
             {
-                callback();
+                callback(true);
             };
 
             pd.PrinterSettings.PrinterName = "Canon SELPHY CP1300";
@@ -143,9 +150,10 @@ namespace face_o_maton
                 GraphicsUnit.Pixel);
         }
 
-        public static void PrintSticker(List<String> photos, int angle)
+        public static void PrintSticker(Action<Boolean> callback, List<String> photos, int angle)
         {
             FacesPrinterClient.Print(photos, angle);
+            callback(true);
         }
     }
 }

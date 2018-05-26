@@ -12,9 +12,12 @@ namespace face_o_maton
     /// </summary>
     public partial class MainWindow : Window
     {
-        PhotoWindow photoWindow;
-        VideoWindow videoWindow;
-        MixFacesWindow mixFacesWindow;
+        private PhotoWindow photoWindow;
+        private VideoWindow videoWindow;
+        private MixFacesWindow mixFacesWindow;
+
+        private const int _nbMaxColorPictures = 1; //18;
+        private int _nbColorPictures = _nbMaxColorPictures;
 
         public CameraDeviceManager DeviceManager;
 
@@ -28,8 +31,24 @@ namespace face_o_maton
 
             StartCamera();
             videoWindow = new VideoWindow(DeviceManager);
-            photoWindow = new PhotoWindow(DeviceManager);
-            mixFacesWindow = new MixFacesWindow();
+            photoWindow = new PhotoWindow(DeviceManager, DecreaseNbColorPictures);
+
+            // mixFacesWindow = new MixFacesWindow();
+        }
+
+        public void DecreaseNbColorPictures()
+        {
+            _nbColorPictures--;
+            if (_nbColorPictures <= 0)
+            {
+                MainGrid.Dispatcher.Invoke(() =>
+                {
+                    // Disabled buttons with color printer
+                    Photo_Button_1_Color_1.IsEnabled = false;
+                    Photo_Button_1_Color_4.IsEnabled = false;
+                    Photo_Button_4_Color_4.IsEnabled = false;
+                });
+            }
         }
 
         private void Video_Button_Click(object sender, RoutedEventArgs e)

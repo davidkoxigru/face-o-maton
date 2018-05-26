@@ -107,7 +107,11 @@ namespace face_o_maton
             Tuple<Bitmap, InterfaceProj.Json> imageAnim = _facesAnim.GetPrintImage();
             var filePath = _facesAnim.Save(imageAnim);
             
-            FacesPrinter.PrintSticker(new List<String> { filePath + @".jpg" }, imageAnim.Item2.angle);
+            FacesPrinter.PrintSticker(PrinterCallback, new List <String> { filePath + @".jpg" }, imageAnim.Item2.angle);
+        }
+        private void PrinterCallback(Boolean printOk)
+        {
+             // Check what to do
         }
 
         private void DisplayImage(Bitmap image)

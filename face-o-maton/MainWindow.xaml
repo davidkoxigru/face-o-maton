@@ -8,11 +8,16 @@
         Title="MainWindow"
         WindowStyle="None"  
         WindowState="Maximized" Height="1080" Width="1920">
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.35*"/>
+            <ColumnDefinition Width="0.55*"/>
+            <ColumnDefinition Width="0.1*"/>
+            <!--
             <ColumnDefinition Width="0.3*"/>
             <ColumnDefinition Width="0.4*"/>
             <ColumnDefinition Width="0.3*"/>
+            -->
         </Grid.ColumnDefinitions>
         <Grid >
             <Button Grid.Column="0" Height="200" Width="200" Click="Video_Button_Click">
@@ -74,7 +79,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
-                    <Button Height="150" Width="150" Click="Photo_Button_1_Color_1_Click">
+                    <Button x:Name="Photo_Button_1_Color_1"   Height="150" Width="150" Click="Photo_Button_1_Color_1_Click">
                         <Button.Template>
                             <ControlTemplate>
                                 <Image Source="pictures/Photo.png"/>
@@ -84,7 +89,7 @@
                     <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="16" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Une photo"/><LineBreak/><Run Text="grand format"/></TextBlock>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <Button  Height="150" Width="150" Click="Photo_Button_1_Color_4_Click">
+                    <Button x:Name="Photo_Button_1_Color_4"  Height="150" Width="150" Click="Photo_Button_1_Color_4_Click">
                         <Button.Template>
                             <ControlTemplate>
                                 <Image Source="pictures/Photo.png"/>
@@ -95,7 +100,7 @@
                     <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="16" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="70"><Run Text="La même photo"/><LineBreak/><Run Text="répétée 4 fois"/><LineBreak/><Run Text="à partager"/><Run/></TextBlock>
                 </Grid>
                 <Grid Grid.Column="2">
-                    <Button Height="150" Width="150" Click="Photo_Button_4_Color_4_Click">
+                    <Button x:Name="Photo_Button_4_Color_4" Height="150" Width="150" Click="Photo_Button_4_Color_4_Click">
                         <Button.Template>
                             <ControlTemplate>
                                 <Image Source="pictures/Photo.png"/>
@@ -107,6 +112,7 @@
             </Grid>
             <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" VerticalAlignment="Center" TextAlignment="Center" Width="400" Height="27" Text="Photos couleur format carte postale" Margin="0,0,0,300" />
         </Grid>
+        <!--
         <Grid Grid.Column="2">
             <Button Height="200" Width="200" Click="Mix_Faces_Button_Click">
                 <Button.Template>
@@ -117,5 +123,6 @@
             </Button>
             <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" Margin="0,0,0,210" Width="320" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Mélanger les visages"/><LineBreak/><Run Text="special freak"/></TextBlock>
         </Grid>
+        -->
     </Grid>
 </Window>

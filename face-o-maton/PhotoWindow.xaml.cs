@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Printing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,12 +27,13 @@ namespace face_o_maton
         private int _nbPhotos;
         private int _nbPrints;
         private List<String> _photos;
-        
+        private Action _decreaseNbColorPictures;
+
         public ICameraDevice CameraDevice { get; set; }
 
         FacesCreation _facesCreation = new FacesCreation();
 
-        public PhotoWindow(CameraDeviceManager DeviceManager)
+        public PhotoWindow(CameraDeviceManager DeviceManager, Action DecreaseNbColorPictures)
         {
             InitializeComponent();
 
@@ -42,7 +41,16 @@ namespace face_o_maton
             Topmost = true;
 #endif
 
+            _decreaseNbColorPictures = DecreaseNbColorPictures;
             CameraDevice = DeviceManager.SelectedCameraDevice;
+
+            WatchMessage.Visibility = Visibility.Hidden;
+            ErrorMessage.Visibility = Visibility.Hidden;
+            PrintMessage.Visibility = Visibility.Hidden;
+            FourPictures.Visibility = Visibility.Hidden;
+            PrintButton.Visibility = Visibility.Hidden;
+            CancelButton.Visibility = Visibility.Hidden;
+            Photo.Visibility = Visibility.Hidden;
         }
 
         public void Open(int nbPhotos, FacesPrinter.PrinterType printer, int nbPrints)
@@ -58,7 +66,7 @@ namespace face_o_maton
             FourPictures.Visibility = Visibility.Hidden;
             PrintButton.IsEnabled = false;
             PrintButton.Visibility = Visibility.Hidden;
-            CancelButton.IsEnabled = true;
+            CancelButton.IsEnabled = false;
             CancelButton.Visibility = Visibility.Hidden;
             Photo.Visibility = Visibility.Visible;
             CameraDevice.PhotoCaptured += DeviceManager_PhotoCaptured;
@@ -414,7 +422,7 @@ namespace face_o_maton
             FourPictures.Visibility = Visibility.Hidden;
             Photo.Visibility = Visibility.Hidden;
 
-            Thread printThread = new Thread(() => FacesPrinter.Print(StopAfterTimer, _photos, _nbPrints, _printer));
+            Thread printThread = new Thread(() => FacesPrinter.Print(PrinterCallback, _photos, _nbPrints, _printer));
             printThread.Start();
         }
 
@@ -444,6 +452,22 @@ namespace face_o_maton
             StopAfterTimer();
         }
 
+        private void PrinterCallback(Boolean printOk)
+        {
+            if (!printOk)
+            {
+                StopWithErrorMessage();
+            }
+            else
+            {
+                if (_printer == FacesPrinter.PrinterType.Color)
+                {
+                    _decreaseNbColorPictures();
+                }
+                StopAfterTimer();
+            }
+        }
+
         private void StopAfterTimer()
         {
             // Launch timer
@@ -461,6 +485,15 @@ namespace face_o_maton
         {
             StopLiveView();
             CameraDevice.PhotoCaptured -= DeviceManager_PhotoCaptured;
+
+            WatchMessage.Visibility = Visibility.Hidden;
+            ErrorMessage.Visibility = Visibility.Hidden;
+            PrintMessage.Visibility = Visibility.Hidden;
+            FourPictures.Visibility = Visibility.Hidden;
+            PrintButton.Visibility = Visibility.Hidden;
+            CancelButton.Visibility = Visibility.Hidden;
+            Photo.Visibility = Visibility.Hidden;
+
             Hide();
         }
     }
