@@ -1,11 +1,11 @@
-﻿using System;
+﻿using bpac;
+using Gma.QrCodeNet.Encoding;
+using Gma.QrCodeNet.Encoding.Windows.Render;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using bpac;
-using Gma.QrCodeNet.Encoding;
-using Gma.QrCodeNet.Encoding.Windows.Render;
 
 namespace FacesPrinterx86
 {
@@ -14,8 +14,8 @@ namespace FacesPrinterx86
         public static void Print(List<String> photos, int angle)
         {
             String templatePath = null;
-            if (angle == 0)
-            {
+            //if (angle == 0)
+            //{
                 if (photos.Count == 1)
                 {
                     // Photo en mode paysage par défaut
@@ -23,16 +23,16 @@ namespace FacesPrinterx86
                 }
                 else if (photos.Count == 4)
                 {
-                    templatePath = Properties.Settings.Default.Landscape4CSWeddingPath;
+                    templatePath = Properties.Settings.Default.Landscape4Template;
                 }
                 
-            } 
-            else if (photos.Count == 1)
-            {
-                templatePath = Properties.Settings.Default.PortraitTemplatePath;
-            }
+            //} 
+            //else if (photos.Count == 1)
+            //{
+            //    templatePath = Properties.Settings.Default.PortraitTemplatePath;
+            //}
 
-            var doc = new DocumentClass();
+            var doc = new Document();
             if (doc.Open(templatePath) != false)
             {
                 String qrCodeString = Properties.Settings.Default.Url;

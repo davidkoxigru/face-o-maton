@@ -16,7 +16,6 @@ namespace face_o_maton
     public partial class VideoWindow : Window
     {
         private Timer _timerStartVideo;
-        private Timer _timerVideo;
 
         private DateTime _recordStartTime;
         private bool _recording;

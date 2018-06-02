@@ -14,7 +14,7 @@ namespace face_o_maton
     {
         private PhotoWindow photoWindow;
         private VideoWindow videoWindow;
-        private MixFacesWindow mixFacesWindow;
+        //private MixFacesWindow mixFacesWindow;
 
         private const int _nbMaxColorPictures = 1; //18;
         private int _nbColorPictures = _nbMaxColorPictures;
@@ -60,10 +60,6 @@ namespace face_o_maton
         {
             photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 1);
         }
-        private void Photo_Button_1_Sticker_4_Click(object sender, RoutedEventArgs e)
-        {
-            photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 4);
-        }
 
         private void Photo_Button_4_Sticker_4_Click(object sender, RoutedEventArgs e)
         {
@@ -84,10 +80,10 @@ namespace face_o_maton
             photoWindow.Open(4, FacesPrinter.PrinterType.Color, 4);
         }
 
-        private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
-        {
-            mixFacesWindow.Open();
-        }
+        //private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    mixFacesWindow.Open();
+        //}
 
         private void StartCamera()
         {

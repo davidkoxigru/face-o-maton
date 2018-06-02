@@ -38,7 +38,6 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
                     <Button Height="150" Width="150" Click="Photo_Button_1_Sticker_1_Click">
@@ -51,16 +50,6 @@
                     <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="14" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Une photo"/><LineBreak/><Run Text="grand format"/></TextBlock>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <Button  Height="150" Width="150" Click="Photo_Button_1_Sticker_4_Click">
-                        <Button.Template>
-                            <ControlTemplate>
-                                <Image Source="pictures/Photo.png"/>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                    <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="14" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="70"><Run Text="La même photo"/><LineBreak/><Run Text="répétée 4 fois"/><LineBreak/><Run Text="à partager"/><Run/></TextBlock>
-                </Grid>
-                <Grid Grid.Column="2">
                     <Button  Height="150" Width="150" Click="Photo_Button_4_Sticker_4_Click">
                         <Button.Template>
                             <ControlTemplate>
