@@ -20,6 +20,8 @@
         <TextBlock x:Name="CounterVideo" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="96"  Height="100" Width="600" VerticalAlignment="Bottom" TextAlignment="Center"></TextBlock>
         <TextBlock x:Name="ErrorMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
 
+
+
     </Grid>
 
 </Window>

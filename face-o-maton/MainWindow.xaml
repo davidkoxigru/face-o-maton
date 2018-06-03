@@ -10,9 +10,8 @@
         WindowState="Maximized" Height="1080" Width="1920">
     <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.35*"/>
-            <ColumnDefinition Width="0.55*"/>
-            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
             <!--
             <ColumnDefinition Width="0.3*"/>
             <ColumnDefinition Width="0.4*"/>
@@ -20,6 +19,20 @@
             -->
         </Grid.ColumnDefinitions>
         <Grid >
+            <MediaElement Name="MediaVideo">
+                <MediaElement.Triggers>
+                    <EventTrigger RoutedEvent="MediaElement.Loaded">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <MediaTimeline Source="videos\test.mp4" Storyboard.TargetName="MediaVideo"  RepeatBehavior="Forever" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </MediaElement.Triggers>
+            </MediaElement>
+            
             <Button Grid.Column="0" Height="200" Width="200" Click="Video_Button_Click">
                 <Button.Template>
                     <ControlTemplate>
@@ -28,6 +41,7 @@
                 </Button.Template>
             </Button>
             <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" Margin="0,0,0,210" Width="293" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Prenez le micro et laissez"/><LineBreak/><Run Text="un souvenir en vidéo"/></TextBlock>
+
         </Grid>
         <Grid Grid.Column="1"  >
             <Grid.RowDefinitions>
@@ -75,7 +89,7 @@
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
-                    <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="16" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Une photo"/><LineBreak/><Run Text="grand format"/></TextBlock>
+                    <TextBlock HorizontalAlignment="Center" FontFamily="AdornS Slab Serif" FontSize="16" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Une photo"/><LineBreak/><Run Text="grand format"/></TextBlock>
                 </Grid>
                 <Grid Grid.Column="1">
                     <Button x:Name="Photo_Button_1_Color_4"  Height="150" Width="150" Click="Photo_Button_1_Color_4_Click">
@@ -113,5 +127,35 @@
             <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" Margin="0,0,0,210" Width="320" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Mélanger les visages"/><LineBreak/><Run Text="special freak"/></TextBlock>
         </Grid>
         -->
+        <Button Grid.Column="0" Height="100" Width="100" Click="Admin1_Button_Click" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="pictures/Transparent.png"/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Grid.Column="0" Height="100" Width="100" Click="Admin2_Button_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="pictures/Transparent.png"/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Grid.Column="1" Height="100" Width="100" Click="Admin3_Button_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="pictures/Transparent.png"/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Grid.Column="1" Height="100" Width="100" Click="Admin4_Button_Click" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button.Template>
+                <ControlTemplate>
+                    <Image Source="pictures/Transparent.png"/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
+
+
 </Window>

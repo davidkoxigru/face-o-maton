@@ -15,8 +15,8 @@ namespace face_o_maton
     /// </summary>
     public partial class VideoWindow : Window
     {
+        private Action _playMain;
         private Timer _timerStartVideo;
-
         private DateTime _recordStartTime;
         private bool _recording;
 
@@ -24,14 +24,14 @@ namespace face_o_maton
 
         public ICameraDevice CameraDevice { get; set; }
 
-        public VideoWindow(CameraDeviceManager DeviceManager)
+        public VideoWindow(CameraDeviceManager DeviceManager, Action PlayMain)
         {
             InitializeComponent();
 
 #if !DEBUG
             Topmost = true;
 #endif
-
+            _playMain = PlayMain;
             CameraDevice = DeviceManager.SelectedCameraDevice;
 
         }
@@ -156,7 +156,6 @@ namespace face_o_maton
             Task.Factory.StartNew(GetLiveViewThread);
         }
 
-
         private void GetLiveViewThread()
         {
             Get();
@@ -179,8 +178,9 @@ namespace face_o_maton
                     GridVideo.Dispatcher.Invoke(() => Video.Source = BitmapUtils.BitmapToImageSource(bitmap));
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Debug("Error occurred :" + ex.Message);
                 StopWithErrorMessage();
             }
         }
@@ -222,6 +222,7 @@ namespace face_o_maton
                 }
                 else
                 {
+                    _timerStartVideo.Dispose();
                     Stop();
                 }
             });
@@ -261,7 +262,8 @@ namespace face_o_maton
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Recording error", ex.Message);
+                Log.Debug("Error: " + ex.Message);
+                GridVideo.Dispatcher.Invoke(() => StopWithErrorMessage());
             }
         }
 
@@ -275,12 +277,13 @@ namespace face_o_maton
         {
             try
             {
-                CameraDevice.StopRecordMovie();
                 _recording = false;
+                CameraDevice.StopRecordMovie();
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Recording error", exception.Message);
+                Log.Debug("Error: " + ex.Message);
+                GridVideo.Dispatcher.Invoke(() => StopWithErrorMessage());
             }
         }
         private void StopWithErrorMessage()
@@ -311,11 +314,13 @@ namespace face_o_maton
 
         private void Stop()
         {
+            StopLiveView();
             if (_recording)
             {
                 StopRecordMovie();
             }
-            StopLiveView();
+
+            _playMain();
             Hide();
         }
     }

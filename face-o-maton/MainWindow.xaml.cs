@@ -12,12 +12,15 @@ namespace face_o_maton
     /// </summary>
     public partial class MainWindow : Window
     {
-        private PhotoWindow photoWindow;
-        private VideoWindow videoWindow;
-        //private MixFacesWindow mixFacesWindow;
+
+        private AdminWindow _adminWindow;
+        private PhotoWindow _photoWindow;
+        private VideoWindow _videoWindow;
+        //private MixFacesWindow _mixFacesWindow;
 
         private const int _nbMaxColorPictures = 1; //18;
         private int _nbColorPictures = _nbMaxColorPictures;
+        private int _AdminActiveCount = 0;
 
         public CameraDeviceManager DeviceManager;
 
@@ -29,16 +32,35 @@ namespace face_o_maton
             Topmost = true;
 #endif
 
-            StartCamera();
-            videoWindow = new VideoWindow(DeviceManager);
-            photoWindow = new PhotoWindow(DeviceManager, DecreaseNbColorPictures);
+            // MediaVideo.Source = new Uri(@"videos/test.mp4");
+            MediaVideo.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
+            MediaVideo.UnloadedBehavior = System.Windows.Controls.MediaState.Manual;
+            //MediaVideo.ScrubbingEnabled = true;
+            //MediaVideo.Play();
 
-            // mixFacesWindow = new MixFacesWindow();
+            StartCamera();
+
+            _adminWindow = new AdminWindow(_nbMaxColorPictures, AdminCallback);
+            _videoWindow = new VideoWindow(DeviceManager, Play);
+            _photoWindow = new PhotoWindow(DeviceManager, Play, DecreaseNbColorPictures);
+
+            // _mixFacesWindow = new MixFacesWindow(Play);
+
+        }
+
+        public void Play()
+        {
+            MediaVideo.Play();
         }
 
         public void DecreaseNbColorPictures()
         {
             _nbColorPictures--;
+            ChecckColorPicturesButtons();
+        }
+
+        private void ChecckColorPicturesButtons()
+        {
             if (_nbColorPictures <= 0)
             {
                 MainGrid.Dispatcher.Invoke(() =>
@@ -53,35 +75,42 @@ namespace face_o_maton
 
         private void Video_Button_Click(object sender, RoutedEventArgs e)
         {
-            videoWindow.Open();
+            MainGrid.Dispatcher.Invoke(() => MediaVideo.Stop());
+            _videoWindow.Open();
         }
 
         private void Photo_Button_1_Sticker_1_Click(object sender, RoutedEventArgs e)
         {
-            photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 1);
+            MediaVideo.Stop();
+            _photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 1);
         }
 
         private void Photo_Button_4_Sticker_4_Click(object sender, RoutedEventArgs e)
         {
-            photoWindow.Open(4, FacesPrinter.PrinterType.Sticker, 4);
+            MediaVideo.Stop();
+            _photoWindow.Open(4, FacesPrinter.PrinterType.Sticker, 4);
         }
 
         private void Photo_Button_1_Color_1_Click(object sender, RoutedEventArgs e)
         {
-            photoWindow.Open(1, FacesPrinter.PrinterType.Color, 1);
+            MediaVideo.Stop();
+            _photoWindow.Open(1, FacesPrinter.PrinterType.Color, 1);
         }
 
         private void Photo_Button_1_Color_4_Click(object sender, RoutedEventArgs e)
         {
-            photoWindow.Open(1, FacesPrinter.PrinterType.Color, 4);
+            MediaVideo.Stop();
+            _photoWindow.Open(1, FacesPrinter.PrinterType.Color, 4);
         }
         private void Photo_Button_4_Color_4_Click(object sender, RoutedEventArgs e)
         {
-            photoWindow.Open(4, FacesPrinter.PrinterType.Color, 4);
+            MediaVideo.Stop();
+            _photoWindow.Open(4, FacesPrinter.PrinterType.Color, 4);
         }
 
         //private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
         //{
+        //MediaVideo.Stop();
         //    mixFacesWindow.Open();
         //}
 
@@ -125,6 +154,54 @@ namespace face_o_maton
             }
             MessageBox.Show(result);
         }
-        
+
+        private void Admin1_Button_Click(object sender, RoutedEventArgs e)
+        {
+            _AdminActiveCount = 1;
+        }
+
+        private void Admin2_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (_AdminActiveCount == 1)
+            {
+                _AdminActiveCount = 2;
+            }
+            else
+            {
+                _AdminActiveCount = 0;
+            }
+        }
+        private void Admin3_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (_AdminActiveCount == 2)
+            {
+                _AdminActiveCount = 3;
+            }
+            else
+            {
+                _AdminActiveCount = 0;
+            }
+        }
+        private void Admin4_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (_AdminActiveCount == 3)
+            {
+                MediaVideo.Stop();
+
+                // Open admin screen 
+                _adminWindow.Open(_nbColorPictures);
+            }
+            else
+            {
+                _AdminActiveCount = 0;
+            }
+        }
+
+        public void AdminCallback (int nbColorPictures)
+        {
+            _nbColorPictures = nbColorPictures;
+            Play();
+            ChecckColorPicturesButtons();
+        } 
     }
 }

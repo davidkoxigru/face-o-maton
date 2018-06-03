@@ -27,24 +27,26 @@ namespace face_o_maton
         private int _nbPhotos;
         private int _nbPrints;
         private List<String> _photos;
+        private Action _playMain;
         private Action _decreaseNbColorPictures;
 
         public ICameraDevice CameraDevice { get; set; }
 
         FacesCreation _facesCreation = new FacesCreation();
 
-        public PhotoWindow(CameraDeviceManager DeviceManager, Action DecreaseNbColorPictures)
+        public PhotoWindow(CameraDeviceManager DeviceManager, Action PlayMain, Action DecreaseNbColorPictures)
         {
             InitializeComponent();
 
 #if !DEBUG
             Topmost = true;
 #endif
-
+            _playMain = PlayMain;
             _decreaseNbColorPictures = DecreaseNbColorPictures;
             CameraDevice = DeviceManager.SelectedCameraDevice;
 
             WatchMessage.Visibility = Visibility.Hidden;
+            WaitMessage.Visibility = Visibility.Hidden;
             ErrorMessage.Visibility = Visibility.Hidden;
             PrintMessage.Visibility = Visibility.Hidden;
             FourPictures.Visibility = Visibility.Hidden;
@@ -61,6 +63,7 @@ namespace face_o_maton
 
             Show();
             WatchMessage.Visibility = Visibility.Hidden;
+            WaitMessage.Visibility = Visibility.Hidden;
             ErrorMessage.Visibility = Visibility.Hidden;
             PrintMessage.Visibility = Visibility.Hidden;
             FourPictures.Visibility = Visibility.Hidden;
@@ -81,8 +84,11 @@ namespace face_o_maton
         private void LaunchTimerBeforeCapture(int duration)
         {
             StartLiveView();
+            WaitMessage.Visibility = Visibility.Hidden;
             WatchMessage.Visibility = Visibility.Hidden;
+
             Photo.Visibility = Visibility.Visible;
+            WatchMessage.Visibility = Visibility.Visible;
             Counter.Visibility = Visibility.Visible;
             Counter.Text = duration.ToString();
             _timerStartCapture = new System.Threading.Timer(OnTimerStartCapture, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
@@ -99,11 +105,9 @@ namespace face_o_maton
                 }
                 else
                 {
+                    Counter.Text = "0";
                     _timerStartCapture.Dispose();
                     StopLiveView();
-                    Counter.Visibility = Visibility.Hidden;
-                    Photo.Visibility = Visibility.Hidden;
-                    WatchMessage.Visibility = Visibility.Visible;
                     CameraDevice.WaitForReady();
                     PhotoCapture();
                 }
@@ -289,6 +293,14 @@ namespace face_o_maton
                 return;
             try
             {
+                GridPhoto.Dispatcher.Invoke(() =>
+                {
+                    Counter.Visibility = Visibility.Hidden;
+                    Photo.Visibility = Visibility.Hidden;
+                    WatchMessage.Visibility = Visibility.Hidden;
+                    WaitMessage.Visibility = Visibility.Visible;
+                });
+
                 eventArgs.CameraDevice.IsBusy = true;
                 var date = DateTime.Now.ToString("yyyyMMddHHmmssffff");
                 var fileName = Properties.Settings.Default.FacesPath + date + ".jpg";
@@ -347,6 +359,7 @@ namespace face_o_maton
 
         private void DisplayPrintPhotos(List<String> photos)
         {
+            WaitMessage.Visibility = Visibility.Hidden;
             WatchMessage.Visibility = Visibility.Hidden;
 
             if (photos.Count == 1)
@@ -494,6 +507,7 @@ namespace face_o_maton
             CancelButton.Visibility = Visibility.Hidden;
             Photo.Visibility = Visibility.Hidden;
 
+            _playMain();
             Hide();
         }
     }

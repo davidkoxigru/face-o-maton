@@ -1,0 +1,21 @@
+﻿<Window x:Class="face_o_maton.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Name="WindowAdmin"
+        Title="AdminWindow"
+        WindowStyle="None"  
+        WindowState="Maximized">
+    <Grid>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Feuilles papier couleur" VerticalAlignment="Center" Width="210" FontFamily="Arial" FontSize="20" Margin="0,0,350,0"/>
+            <TextBox x:Name="NbColorPicturesTextBox" HorizontalAlignment="Center" Height="24" TextWrapping="Wrap" VerticalAlignment="Center" Width="35" FontFamily="Arial" FontSize="20" Margin="0,0,100,0"/>
+            <Button Content="Max" Click="Max_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Width="50" FontFamily="Arial" FontSize="20" Margin="0,0,0,0"/>
+            <Button Content="+" Click="Plus_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Width="30" FontFamily="Arial" FontSize="20" Margin="0,0,-90,0"/>
+            <Button Content="-" Click="Minus_Button_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Width="30" FontFamily="Arial" FontSize="20" Margin="0,0,-160,0"/>
+        </Grid>
+        <Button Content="Close" Click="Close_Button_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="100" FontSize="20" FontFamily="Arial" Margin="0,0,20,20"/>
+    </Grid>
+</Window>

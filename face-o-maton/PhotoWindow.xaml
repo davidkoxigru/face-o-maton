@@ -56,12 +56,14 @@
                 <SolidColorBrush Color="Red" Opacity="0.3" />
             </Button.Background>
         </Button>
+        <Grid>
+            <TextBlock x:Name="WatchMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,0,150"><Run Text="Regardez la caméra"/><LineBreak/><Run Text="Photo dans"/></TextBlock>
+            <TextBlock x:Name="Counter" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="192"  Height="200" Width="600" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,0,-150"><Run Text="3"/></TextBlock>
+        </Grid>
 
-        <TextBlock x:Name="Counter" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="192"  Height="200" Width="600" VerticalAlignment="Center" TextAlignment="Center"></TextBlock>
-
-        <TextBlock x:Name="WatchMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Regardez la caméra"/></TextBlock>
-        <TextBlock x:Name="PrintMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Impression"/></TextBlock>
-        <TextBlock x:Name="ErrorMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
+        <TextBlock x:Name="WaitMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center" Visibility="Hidden"><Run Text="Veuillez patienter"/></TextBlock>
+        <TextBlock x:Name="PrintMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center" Visibility="Hidden"><Run Text="Impression"/></TextBlock>
+        <TextBlock x:Name="ErrorMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center" Visibility="Hidden"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
 
     </Grid>
 </Window>
