@@ -7,46 +7,26 @@
         mc:Ignorable="d"
         Title="MainWindow"
         WindowStyle="None"  
-        WindowState="Maximized" Height="1080" Width="1920">
+        WindowState="Maximized" Height="1080" Width="1920" Background="#FFFAF7F2">
     <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*"/>
-            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition Width="0.6*"/>
             <!--
             <ColumnDefinition Width="0.3*"/>
             <ColumnDefinition Width="0.4*"/>
             <ColumnDefinition Width="0.3*"/>
             -->
         </Grid.ColumnDefinitions>
-        <Grid >
-            <MediaElement Name="MediaVideo">
-                <MediaElement.Triggers>
-                    <EventTrigger RoutedEvent="MediaElement.Loaded">
-                        <EventTrigger.Actions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <MediaTimeline Source="videos\test.mp4" Storyboard.TargetName="MediaVideo"  RepeatBehavior="Forever" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger.Actions>
-                    </EventTrigger>
-                </MediaElement.Triggers>
-            </MediaElement>
-            
-            <Button Grid.Column="0" Height="200" Width="200" Click="Video_Button_Click">
-                <Button.Template>
-                    <ControlTemplate>
-                        <Image Source="pictures/Camera.png"/>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" Margin="0,0,0,210" Width="293" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Prenez le micro et laissez"/><LineBreak/><Run Text="un souvenir en vidéo"/></TextBlock>
-
+        <Grid Grid.Column="0">
+            <MediaElement Source="videos\rooney.mp4" Name="myMediaElement" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="Fill" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
+            <Button Grid.Column="0" Height="1080" Width="768" Click="Video_Button_Click" Opacity="0"/>
         </Grid>
-        <Grid Grid.Column="1"  >
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.375*"/>
+                <RowDefinition Height="0.375*"/>
+                <RowDefinition Height="0.25*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0"  >
                 <Grid.ColumnDefinitions>
@@ -54,27 +34,25 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
-                    <Button Height="150" Width="150" Click="Photo_Button_1_Sticker_1_Click">
+                    <Button Click="Photo_Button_1_Color_1_Click">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="pictures/Photo.png"/>
+                                <Image Source="pictures/1A.png"/>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
-                    <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="14" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Une photo"/><LineBreak/><Run Text="grand format"/></TextBlock>
+                    <Image x:Name="Disabled_1_Color_1_Click"  Source="pictures/1A-Disabled.png" Visibility="Hidden"/>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <Button  Height="150" Width="150" Click="Photo_Button_4_Sticker_4_Click">
+                    <Button Click="Photo_Button_1_Sticker_1_Click">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="pictures/Photo.png"/>
+                                <Image Source="pictures/1B.png"/>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
-                    <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="14" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="4 photos"/><LineBreak/><Run Text="le grand"/><LineBreak/><Run Text="amusement"/></TextBlock>
                 </Grid>
             </Grid>
-            <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" VerticalAlignment="Center" TextAlignment="Center" Width="400" Height="27" Text="Des stickers en noir et blanc" Margin="0,0,0,300" />
             <Grid Grid.Row="1"  >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -82,51 +60,40 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
-                    <Button x:Name="Photo_Button_1_Color_1"   Height="150" Width="150" Click="Photo_Button_1_Color_1_Click">
+                    <Button x:Name="Photo_Button_1_Color_1" Click="Photo_Button_1_Color_4_Click">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="pictures/Photo.png"/>
+                                <Image Source="pictures/2A.png"/>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
-                    <TextBlock HorizontalAlignment="Center" FontFamily="AdornS Slab Serif" FontSize="16" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Une photo"/><LineBreak/><Run Text="grand format"/></TextBlock>
+                    <Image x:Name="Disabled_1_Color_4_Click"  Source="pictures/2A-Disabled.png" Visibility="Hidden"/>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <Button x:Name="Photo_Button_1_Color_4"  Height="150" Width="150" Click="Photo_Button_1_Color_4_Click">
+                    <Button x:Name="Photo_Button_1_Color_4" Click="Photo_Button_4_Color_4_Click">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="pictures/Photo.png"/>
+                                <Image Source="pictures/2B.png"/>
                             </ControlTemplate>
                         </Button.Template>
-                        <TextBlock Text="1 Photo imprimée 4 fois"  VerticalAlignment="Top" HorizontalAlignment="Center"/>
                     </Button>
-                    <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="16" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="70"><Run Text="La même photo"/><LineBreak/><Run Text="répétée 4 fois"/><LineBreak/><Run Text="à partager"/><Run/></TextBlock>
+                    <Image x:Name="Disabled_4_Color_4_Click"  Source="pictures/2B-Disabled.png" Visibility="Hidden"/>
                 </Grid>
                 <Grid Grid.Column="2">
-                    <Button x:Name="Photo_Button_4_Color_4" Height="150" Width="150" Click="Photo_Button_4_Color_4_Click">
+                    <Button x:Name="Photo_Button_4_Color_4" Click="Photo_Button_4_Sticker_4_Click">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="pictures/Photo.png"/>
+                                <Image Source="pictures/2C.png"/>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
-                    <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="16" Margin="0,0,0,210" Width="192" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="4 photos"/><LineBreak/><Run Text="le grand"/><LineBreak/><Run Text="amusement"/></TextBlock>
                 </Grid>
             </Grid>
-            <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" VerticalAlignment="Center" TextAlignment="Center" Width="400" Height="27" Text="Photos couleur format carte postale" Margin="0,0,0,300" />
+            <Grid Grid.Row="2">
+                <Image Source="pictures/3.png"/>
+            </Grid>
         </Grid>
-        <!--
-        <Grid Grid.Column="2">
-            <Button Height="200" Width="200" Click="Mix_Faces_Button_Click">
-                <Button.Template>
-                    <ControlTemplate>
-                        <Image Source="pictures/MixFaces.png"/>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <TextBlock HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="18" Margin="0,0,0,210" Width="320" VerticalAlignment="Center" TextAlignment="Center" Height="67"><Run Text="Mélanger les visages"/><LineBreak/><Run Text="special freak"/></TextBlock>
-        </Grid>
-        -->
+
         <Button Grid.Column="0" Height="100" Width="100" Click="Admin1_Button_Click" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Button.Template>
                 <ControlTemplate>

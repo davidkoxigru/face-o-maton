@@ -18,7 +18,8 @@ namespace face_o_maton
         private VideoWindow _videoWindow;
         //private MixFacesWindow _mixFacesWindow;
 
-        private const int _nbMaxColorPictures = 1; //18;
+        private string _path = @"\NbColorPictures.txt";
+        private const int _nbMaxColorPictures = 18;
         private int _nbColorPictures = _nbMaxColorPictures;
         private int _AdminActiveCount = 0;
 
@@ -31,36 +32,37 @@ namespace face_o_maton
 #if !DEBUG
             Topmost = true;
 #endif
-
-            // MediaVideo.Source = new Uri(@"videos/test.mp4");
-            MediaVideo.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
-            MediaVideo.UnloadedBehavior = System.Windows.Controls.MediaState.Manual;
-            //MediaVideo.ScrubbingEnabled = true;
-            //MediaVideo.Play();
-
             StartCamera();
 
             _adminWindow = new AdminWindow(_nbMaxColorPictures, AdminCallback);
-            _videoWindow = new VideoWindow(DeviceManager, Play);
-            _photoWindow = new PhotoWindow(DeviceManager, Play, DecreaseNbColorPictures);
+            _videoWindow = new VideoWindow(DeviceManager, Callback);
+            _photoWindow = new PhotoWindow(DeviceManager, Callback, DecreaseNbColorPictures);
 
             // _mixFacesWindow = new MixFacesWindow(Play);
 
+            if (File.Exists(Directory.GetCurrentDirectory() + _path))
+            {
+                // Open the file to read from.
+                string readText = File.ReadAllText(Directory.GetCurrentDirectory() + _path);
+                _nbColorPictures = int.Parse(readText);
+            }
         }
-
-        public void Play()
-        {
-            MediaVideo.Play();
-        }
-
+        
         public void DecreaseNbColorPictures()
         {
+
             _nbColorPictures--;
-            ChecckColorPicturesButtons();
+            CheckColorPicturesButtons();
+
         }
 
-        private void ChecckColorPicturesButtons()
+        private void CheckColorPicturesButtons()
         {
+            // Create a file to write to.
+            string createText = _nbColorPictures.ToString();
+            File.WriteAllText(Directory.GetCurrentDirectory() + _path, createText);
+
+
             if (_nbColorPictures <= 0)
             {
                 MainGrid.Dispatcher.Invoke(() =>
@@ -69,49 +71,66 @@ namespace face_o_maton
                     Photo_Button_1_Color_1.IsEnabled = false;
                     Photo_Button_1_Color_4.IsEnabled = false;
                     Photo_Button_4_Color_4.IsEnabled = false;
+                    Disabled_1_Color_1_Click.Visibility = Visibility.Visible;
+                    Disabled_1_Color_4_Click.Visibility = Visibility.Visible;
+                    Disabled_4_Color_4_Click.Visibility = Visibility.Visible;
                 });
             }
-        }
+            else
+            {
+                MainGrid.Dispatcher.Invoke(() =>
+                {
+                    // Enabled buttons with color printer
+                    Photo_Button_1_Color_1.IsEnabled = true;
+                    Photo_Button_1_Color_4.IsEnabled = true;
+                    Photo_Button_4_Color_4.IsEnabled = true;
+                    Disabled_1_Color_1_Click.Visibility = Visibility.Hidden;
+                    Disabled_1_Color_4_Click.Visibility = Visibility.Hidden;
+                    Disabled_4_Color_4_Click.Visibility = Visibility.Hidden;
+                });
+            }
+            }
 
         private void Video_Button_Click(object sender, RoutedEventArgs e)
         {
-            MainGrid.Dispatcher.Invoke(() => MediaVideo.Stop());
+            //MainGrid.Dispatcher.Invoke(() => StopVideo());
+            StopVideo();
             _videoWindow.Open();
         }
 
         private void Photo_Button_1_Sticker_1_Click(object sender, RoutedEventArgs e)
         {
-            MediaVideo.Stop();
+            StopVideo();
             _photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 1);
         }
 
         private void Photo_Button_4_Sticker_4_Click(object sender, RoutedEventArgs e)
         {
-            MediaVideo.Stop();
+            StopVideo();
             _photoWindow.Open(4, FacesPrinter.PrinterType.Sticker, 4);
         }
 
         private void Photo_Button_1_Color_1_Click(object sender, RoutedEventArgs e)
         {
-            MediaVideo.Stop();
+            StopVideo();
             _photoWindow.Open(1, FacesPrinter.PrinterType.Color, 1);
         }
 
         private void Photo_Button_1_Color_4_Click(object sender, RoutedEventArgs e)
         {
-            MediaVideo.Stop();
+            StopVideo();
             _photoWindow.Open(1, FacesPrinter.PrinterType.Color, 4);
         }
         private void Photo_Button_4_Color_4_Click(object sender, RoutedEventArgs e)
         {
-            MediaVideo.Stop();
+            StopVideo();
             _photoWindow.Open(4, FacesPrinter.PrinterType.Color, 4);
         }
 
         //private void Mix_Faces_Button_Click(object sender, RoutedEventArgs e)
         //{
-        //MediaVideo.Stop();
-        //    mixFacesWindow.Open();
+        //  StopVideo();
+        //  mixFacesWindow.Open();
         //}
 
         private void StartCamera()
@@ -186,7 +205,7 @@ namespace face_o_maton
         {
             if (_AdminActiveCount == 3)
             {
-                MediaVideo.Stop();
+                StopVideo();
 
                 // Open admin screen 
                 _adminWindow.Open(_nbColorPictures);
@@ -197,11 +216,44 @@ namespace face_o_maton
             }
         }
 
+        public void Callback()
+        {
+            StartVideo();
+        }
+
         public void AdminCallback (int nbColorPictures)
         {
             _nbColorPictures = nbColorPictures;
-            Play();
-            ChecckColorPicturesButtons();
-        } 
+            CheckColorPicturesButtons();
+            StartVideo();
+        }
+
+        private void Element_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            // Play video
+            StartVideo();
+        }
+
+        private void Element_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            // Play video again
+            RestartVideo();
+        }
+
+        private void RestartVideo()
+        {
+            myMediaElement.Position = TimeSpan.FromSeconds(0);
+            myMediaElement.Play();
+        }
+
+        private void StartVideo()
+        {
+            myMediaElement.Play();
+        }
+
+        private void StopVideo()
+        {
+            myMediaElement.Stop();
+        }
     }
 }

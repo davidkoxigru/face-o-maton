@@ -7,18 +7,39 @@
         mc:Ignorable="d"
         Title="VideoWindow"
         WindowStyle="None"  
-        WindowState="Maximized">
+        WindowState="Maximized" Height="1080" Width="1920" Background="#FFFAF7F2">
     <Grid x:Name="GridVideo">
-        <Image x:Name="Video" RenderTransformOrigin="0.5,0.5" Margin="30">
+        <Image Source="pictures/fond-video.png"/>
+        <Image x:Name="Video" RenderTransformOrigin="0.5,0.5" Margin="20">
             <Image.RenderTransform>
                 <ScaleTransform ScaleX="-1"/>
             </Image.RenderTransform>
         </Image>
 
 
-        <TextBlock x:Name="CounterBeforeVideo" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="192"  Height="200" Width="600" VerticalAlignment="Center" TextAlignment="Center"></TextBlock>
-        <TextBlock x:Name="CounterVideo" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="96"  Height="100" Width="600" VerticalAlignment="Bottom" TextAlignment="Center"></TextBlock>
-        <TextBlock x:Name="ErrorMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
+        <TextBlock x:Name="TextBeforeVideo" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="40"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Prenez le micro"/><LineBreak/><Run Text="et laissez votre message"/></TextBlock>
+
+
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50">
+            <Image x:Name="ButtonImageStop" Source="pictures/bouton-stop.png" Width="300" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Image x:Name="ButtonImage5" Source="pictures/number5.png" Width="300" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+            <Image x:Name="ButtonImage4" Source="pictures/number4.png" Width="300" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+            <Image x:Name="ButtonImage3" Source="pictures/number3.png" Width="300" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+            <Image x:Name="ButtonImage2" Source="pictures/number2.png" Width="300" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+            <Image x:Name="ButtonImage1" Source="pictures/number1.png" Width="300" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+            <Image x:Name="ButtonImage0" Source="pictures/number0.png" Width="300" Height="120" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+            <Button x:Name="StopButton" Width="300" Height="120"  Click="Button_stop_Click" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Source="pictures/Transparent.png"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+
+        <TextBlock x:Name="EndMessage" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="40"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Message bien enregistré"/><LineBreak/><Run Text="Vous pouvez raccrocher"/></TextBlock>
+
+        <TextBlock x:Name="ErrorMessage" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="40"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
 
 
 

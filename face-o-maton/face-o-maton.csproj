@@ -103,6 +103,7 @@
     <Compile Include="FacesAnim.cs" />
     <Compile Include="FacesPrinter.cs" />
     <Compile Include="FacesPrinterClient.cs" />
+    <Compile Include="LiveView.cs" />
     <Compile Include="MixFacesWindow.xaml.cs">
       <DependentUpon>MixFacesWindow.xaml</DependentUpon>
     </Compile>
@@ -171,17 +172,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="pictures\Camera.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="pictures\MixFaces.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="pictures\Photo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\FacesCreationLib\FacesCreationLib.csproj">
       <Project>{56d27c6d-eba6-4fc2-ac8f-6d203805b91e}</Project>
       <Name>FacesCreationLib</Name>
@@ -193,6 +183,10 @@
     <ProjectReference Include="..\FacesProj\FacesProj.csproj">
       <Project>{6d5fe215-ec8c-47c8-a7eb-6530d62670ad}</Project>
       <Name>FacesProj</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GrayscaleEffect\GrayscaleEffect.csproj">
+      <Project>{7f9cd429-94f5-4bf0-9bac-1ae41d105e97}</Project>
+      <Name>GrayscaleEffect</Name>
     </ProjectReference>
     <ProjectReference Include="..\InterfaceImage\InterfaceProj.csproj">
       <Project>{1c0e6d07-80a4-4bc3-a6e5-4c0acf388aa3}</Project>
@@ -218,15 +212,67 @@
     <Content Include="EdsImage.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="pictures\1A.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\1B.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\2A.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\2B.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\2C.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\fondphoto.png" />
+    <Resource Include="pictures\bouton-non.png" />
+    <Resource Include="pictures\bouton-oui.png" />
+    <Resource Include="pictures\bouton-stop.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\picto-imprimer.png" />
+    <Resource Include="pictures\picto-patienter.png" />
+    <Resource Include="pictures\picto-sourire.png" />
+    <Resource Include="pictures\fondimage.png" />
+    <Resource Include="pictures\1A-Disabled.png" />
+    <Resource Include="pictures\2A-Disabled.png" />
+    <Resource Include="pictures\2B-Disabled.png" />
+    <Resource Include="pictures\fond-video.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\number0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\number1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\number2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\number3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\number4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="pictures\number5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="videos\rooney.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="pictures\CSWedding.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="pictures\Transparent.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Content Include="videos\test.mp4">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

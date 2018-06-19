@@ -3,67 +3,109 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:effect="clr-namespace:GrayscaleEffect;assembly=GrayscaleEffect"
         mc:Ignorable="d"
         x:Name="WindowPhoto"
         Title="PhotoWindow"
         WindowStyle="None"  
-        WindowState="Maximized">
-    <Grid x:Name="GridPhoto">
-        <Image x:Name="Photo" RenderTransformOrigin="0.5,0.5" Margin="30">
-            <Image.RenderTransform>
-                <ScaleTransform ScaleX="-1"/>
-            </Image.RenderTransform>
-        </Image>
-
-        <Grid x:Name="FourPictures">
+        WindowState="Maximized" Height="1080" Width="1920" Background="#FFFAF7F2">
+    <Grid>
+        <Image Source="pictures/fondphoto.png"/>
+        <Grid x:Name="GridPhoto">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Image Grid.Column="0" Grid.Row="0" x:Name="Photo0" RenderTransformOrigin="0.5,0.5" Margin="150,30,5,5">
+            <Grid>
+                <TextBlock x:Name="AskPrintMessage" Grid.Column="0" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="36"  Height="160"  Width="300" VerticalAlignment="Center" TextAlignment="Left" Margin="0,50,0,0"><Run Text="Imprimer ?"/></TextBlock>
+                <Button x:Name="PrintButton" Grid.Column="0" Content="Button" Width="150" Height="150" VerticalAlignment="Center" Click="Button_print_Click" HorizontalAlignment="Center" Margin="180,200,0,0">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Source="pictures/bouton-oui.png"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="CancelButton" Grid.Column="0" Content="Button" Width="150" Height="150" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_cancel_Click" Margin="-180,200,0,0">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Source="pictures/bouton-non.png"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+            <TextBlock x:Name="PositionMessage"     Grid.Column="0" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="36"  Height="160"  Width="300" VerticalAlignment="Center" TextAlignment="Left" Margin="0,50,0,0"><Run Text="Placez-vous"/><LineBreak/><Run Text="en vous aidant"/><LineBreak/><Run Text="de la vidéo"/></TextBlock>
+            <TextBlock x:Name="WatchMessage"        Grid.Column="0" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="36"  Height="160"  Width="300" VerticalAlignment="Center" TextAlignment="Left" Margin="0,50,0,0" Visibility="Hidden"><Run Text="Regardez"/><LineBreak/><Run Text="l'appareil photo"/><LineBreak/><Run Text="et souriez"/></TextBlock>
+            <TextBlock x:Name="WaitDownloadMessage" Grid.Column="0" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="36"  Height="160"  Width="300" VerticalAlignment="Center" TextAlignment="Left" Margin="0,50,0,0" Visibility="Hidden"><Run Text="Patientez"/><LineBreak/><Run Text="pendant"/><LineBreak/><Run Text="le chargement"/><LineBreak/><Run Text="de la photo"/></TextBlock>
+            <TextBlock x:Name="PrintMessage"        Grid.Column="0" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="36"  Height="160"  Width="300" VerticalAlignment="Center" TextAlignment="Left" Margin="0,50,0,0" Visibility="Hidden"><Run Text="Impression"/><LineBreak/><Run Text="en cours"/></TextBlock>
+            <TextBlock x:Name="ErrorMessage"        Grid.Column="0" Foreground="Black" HorizontalAlignment="Center" FontFamily="Maison Neue" FontWeight="Bold" FontSize="36"  Height="160"  Width="300" VerticalAlignment="Center" TextAlignment="Left" Margin="0,50,0,0" Visibility="Hidden"><Run Text="Petit problème"/><LineBreak/><Run Text="technique"/><LineBreak/><Run Text="veuillez réessayer"/></TextBlock>
+
+
+            <Image x:Name="Preview" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
                 <Image.RenderTransform>
                     <ScaleTransform ScaleX="-1"/>
                 </Image.RenderTransform>
             </Image>
-            <Image x:Name="Photo1" Grid.Column="1" Grid.Row="0" RenderTransformOrigin="0.5,0.5" Margin="5,30,150,5">
+            <Image x:Name="Smile"  Grid.Column="1" Source="pictures/picto-sourire.png" Width="150" Height="150"/>
+            <Image x:Name="Wait"  Grid.Column="1" Source="pictures/picto-patienter.png" Width="150" Height="150"/>
+            <Image x:Name="Photo" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
                 <Image.RenderTransform>
                     <ScaleTransform ScaleX="-1"/>
                 </Image.RenderTransform>
             </Image>
-            <Image x:Name="Photo2" Grid.Column="0" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Margin="150,5,5,30">
-                <Image.RenderTransform>
-                    <ScaleTransform ScaleX="-1"/>
-                </Image.RenderTransform>
-            </Image>
-            <Image x:Name="Photo3" Grid.Column="1" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Margin="5,5,150,30">
-                <Image.RenderTransform>
-                    <ScaleTransform ScaleX="-1"/>
-                </Image.RenderTransform>
-            </Image>
+            <Grid x:Name="FourPictures" Grid.Column="1" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Image x:Name="BackPhoto0" Grid.Column="0" Grid.Row="0" Source ="pictures/fondimage.png" RenderTransformOrigin="0.5,0.5" Margin="10,0,4.667,8.667" VerticalAlignment="Bottom"/>
+                <Image x:Name="Photo0" Grid.Column="0" Grid.Row="0" RenderTransformOrigin="0.5,0.5" Margin="10,0,5,5" VerticalAlignment="Bottom">
+                    <Image.RenderTransform>
+                        <ScaleTransform ScaleX="-1"/>
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="Smile0" Grid.Column="0" Grid.Row="0" Source="pictures/picto-sourire.png" Width="100" Height="100" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50"/>
+                <Image x:Name="Wait0" Grid.Column="0" Grid.Row="0" Source="pictures/picto-patienter.png" Width="100" Height="100" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50"/>
+                <TextBlock x:Name="Number0" Grid.Column="0" Grid.Row="0" Foreground="Black" FontFamily="Maison Neue" FontWeight="Bold" FontSize="72" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50" Visibility="Hidden"><Run Text="1"/></TextBlock>
+
+                <Image x:Name="BackPhoto1" Grid.Column="1" Grid.Row="0" Source ="pictures/fondimage.png" RenderTransformOrigin="0.5,0.5" Margin="5,0,10,5" VerticalAlignment="Bottom"/>
+                <Image x:Name="Photo1" Grid.Column="1" Grid.Row="0" RenderTransformOrigin="0.5,0.5" Margin="5,0,10,5" VerticalAlignment="Bottom">
+                    <Image.RenderTransform>
+                        <ScaleTransform ScaleX="-1"/>
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="Smile1" Grid.Column="1" Grid.Row="0" Source="pictures/picto-sourire.png" Width="100" Height="100" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50"/>
+                <Image x:Name="Wait1" Grid.Column="1" Grid.Row="0" Source="pictures/picto-patienter.png" Width="100" Height="100" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50"/>
+                <TextBlock x:Name="Number1" Grid.Column="1" Grid.Row="0" Foreground="Black" FontFamily="Maison Neue" FontWeight="Bold" FontSize="72" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50" Visibility="Hidden"><Run Text="2"/></TextBlock>
+
+                <Image x:Name="BackPhoto2" Grid.Column="0" Grid.Row="1" Source ="pictures/fondimage.png" RenderTransformOrigin="0.5,0.5" Margin="10,5,5,0" VerticalAlignment="Top"/>
+                <Image x:Name="Photo2" Grid.Column="0" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Margin="10,5,5,0" VerticalAlignment="Top">
+                    <Image.RenderTransform>
+                        <ScaleTransform ScaleX="-1"/>
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="Smile2" Grid.Column="0" Grid.Row="1" Source="pictures/picto-sourire.png" Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,50,0,0"/>
+                <Image x:Name="Wait2" Grid.Column="0" Grid.Row="1" Source="pictures/picto-patienter.png" Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,50,0,0"/>
+                <TextBlock x:Name="Number2" Grid.Column="0" Grid.Row="1" Foreground="Black" FontFamily="Maison Neue" FontWeight="Bold" FontSize="72" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,50,0,0" Visibility="Hidden"><Run Text="3"/></TextBlock>
+
+
+
+                <Image x:Name="BackPhoto3" Grid.Column="1" Grid.Row="1" Source ="pictures/fondimage.png" RenderTransformOrigin="0.5,0.5" Margin="5,5,10,0" VerticalAlignment="Top"/>
+                <Image x:Name="Photo3" Grid.Column="1" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Margin="5,5,10,0" VerticalAlignment="Top">
+                    <Image.RenderTransform>
+                        <ScaleTransform ScaleX="-1"/>
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="Smile3" Grid.Column="1" Grid.Row="1" Source="pictures/picto-sourire.png" Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,50,0,0"/>
+                <Image x:Name="Wait3" Grid.Column="1" Grid.Row="1" Source="pictures/picto-patienter.png" Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,50,0,0"/>
+                <TextBlock x:Name="Number3" Grid.Column="1" Grid.Row="1" Foreground="Black" FontFamily="Maison Neue" FontWeight="Bold" FontSize="72" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,50,0,0" Visibility="Hidden"><Run Text="4"/></TextBlock>
+            </Grid>
+            <Image x:Name="Print"  Grid.Column="1" Source="pictures/picto-imprimer.png" Width="150" Height="150" Visibility="Hidden"/>
+
+
         </Grid>
-
-        <Button x:Name="PrintButton" Content="Button" Width="150" Height="150" VerticalAlignment="Bottom" Click="Button_print_Click" HorizontalAlignment="Right">
-            <Button.Background>
-                <SolidColorBrush Color="Green" Opacity="0.3" />
-            </Button.Background>
-        </Button>
-        <Button x:Name="CancelButton" Content="Button" Width="150" Height="150" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_cancel_Click">
-            <Button.Background>
-                <SolidColorBrush Color="Red" Opacity="0.3" />
-            </Button.Background>
-        </Button>
-        <Grid>
-            <TextBlock x:Name="WatchMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,0,150"><Run Text="Regardez la caméra"/><LineBreak/><Run Text="Photo dans"/></TextBlock>
-            <TextBlock x:Name="Counter" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="192"  Height="200" Width="600" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,0,-150"><Run Text="3"/></TextBlock>
-        </Grid>
-
-        <TextBlock x:Name="WaitMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center" Visibility="Hidden"><Run Text="Veuillez patienter"/></TextBlock>
-        <TextBlock x:Name="PrintMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="60" Width="900" VerticalAlignment="Center" TextAlignment="Center" Visibility="Hidden"><Run Text="Impression"/></TextBlock>
-        <TextBlock x:Name="ErrorMessage" Foreground="Blue" HorizontalAlignment="Center" FontFamily="Arial Black" FontSize="48"  Height="120" Width="900" VerticalAlignment="Center" TextAlignment="Center" Visibility="Hidden"><Run Text="Petit problème technique"/><LineBreak/><Run Text="Veuillez réessayer"/></TextBlock>
-
     </Grid>
 </Window>

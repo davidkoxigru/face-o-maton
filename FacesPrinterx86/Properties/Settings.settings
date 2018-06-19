@@ -11,9 +11,6 @@
     <Setting Name="Url" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://www.koxigru.net/cswedding/index.html?photos=</Value>
     </Setting>
-    <Setting Name="PortraitTemplatePath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">PortraitCSWedding.lbx</Value>
-    </Setting>
     <Setting Name="Landscape4Template" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Landscape4CSWedding.lbx</Value>
     </Setting>

@@ -15,14 +15,17 @@ namespace face_o_maton
     /// </summary>
     public partial class VideoWindow : Window
     {
+        private int _counterBeforeVideo;
+        private int _counterVideo;
         private Action _playMain;
+        private LiveView _liveView;
         private Timer _timerStartVideo;
-        private DateTime _recordStartTime;
+        private Timer _timerVideo;
         private bool _recording;
 
-        private System.Timers.Timer _timerBeforeStopping = new System.Timers.Timer(2000);
+        private System.Timers.Timer _timerBeforeStopping;
 
-        public ICameraDevice CameraDevice { get; set; }
+        public ICameraDevice _cameraDevice { get; set; }
 
         public VideoWindow(CameraDeviceManager DeviceManager, Action PlayMain)
         {
@@ -32,198 +35,132 @@ namespace face_o_maton
             Topmost = true;
 #endif
             _playMain = PlayMain;
-            CameraDevice = DeviceManager.SelectedCameraDevice;
+            _cameraDevice = DeviceManager.SelectedCameraDevice;
 
         }
 
         public void Open()
         {
             Show();
-            CounterBeforeVideo.Visibility = Visibility.Hidden;
+            TextBeforeVideo.Visibility = Visibility.Hidden;
+            EndMessage.Visibility = Visibility.Hidden;
             ErrorMessage.Visibility = Visibility.Hidden;
-            CounterVideo.Visibility = Visibility.Hidden;
-            StartLiveView();
+            Video.Visibility = Visibility.Hidden;
+            ButtonImageStop.Visibility = Visibility.Hidden;
+            ButtonImage5.Visibility = Visibility.Hidden;
+            ButtonImage4.Visibility = Visibility.Hidden;
+            ButtonImage3.Visibility = Visibility.Hidden;
+            ButtonImage2.Visibility = Visibility.Hidden;
+            ButtonImage1.Visibility = Visibility.Hidden;
+            ButtonImage0.Visibility = Visibility.Hidden;
+            StopButton.Visibility = Visibility.Hidden;
+            StopButton.IsEnabled = false;
+
+            _liveView = new LiveView(_cameraDevice, StopWithEndMessage);
+            _liveView.Start(Video, false);
+
             LaunchTimerBeforeCapture(3);
         }
 
         private void LaunchTimerBeforeCapture(int duration)
         {
-            StartLiveView();
-            CounterBeforeVideo.Visibility = Visibility.Visible;
-            CounterBeforeVideo.Text = duration.ToString();
-            _timerStartVideo = new Timer(OnTimerStartVideo, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+            _counterBeforeVideo = duration;
+            TextBeforeVideo.Visibility = Visibility.Visible;
+            _timerStartVideo = new Timer(OnTimerStartVideo, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(1));
         }
 
         private void OnTimerStartVideo(object status)
         {
             GridVideo.Dispatcher.Invoke(() =>
             {
-                int counter = Int32.Parse(CounterBeforeVideo.Text);
-                if (counter-- > 1)
-                {
-                    CounterBeforeVideo.Text = counter.ToString();
-                }
-                else
-                {
+                if (_counterBeforeVideo-- < 1)
+                { 
                     _timerStartVideo.Dispose();
+                    _timerStartVideo = null;
+
                     RecordMovie();
-                    CounterBeforeVideo.Visibility = Visibility.Hidden;
                 }
             });
-        }
-
-        private System.Timers.Timer _timer = new System.Timers.Timer(1000 / 15);
-        public void StartLiveView()
-        {
-            try
-            {
-                string resp = CameraDevice.GetProhibitionCondition(OperationEnum.LiveView);
-                if (string.IsNullOrEmpty(resp))
-                {
-                    Thread thread = new Thread(StartLiveViewThread);
-                    thread.Start();
-                    thread.Join();
-                }
-                else
-                {
-                    Log.Debug("Error starting live view " + resp);
-                    StopWithErrorMessage();
-                    _timer.Stop();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Debug("Error starting live view " + ex.ToString());
-                StopWithErrorMessage();
-                _timer.Stop();
-            }
-        }
-
-        private StreamPlayerControl _videoSource = new StreamPlayerControl();
-        private void StartLiveViewThread()
-        {
-            try
-            {
-                bool retry = false;
-                int retryNum = 0;
-                Log.Debug("LiveView: Liveview started");
-                do
-                {
-                    try
-                    {
-                        CameraDevice.StartLiveView();
-                    }
-                    catch (DeviceException deviceException)
-                    {
-                        if (deviceException.ErrorCode == ErrorCodes.ERROR_BUSY ||
-                            deviceException.ErrorCode == ErrorCodes.MTP_Device_Busy)
-                        {
-                            Thread.Sleep(100);
-                            Log.Debug("Retry live view :" + deviceException.ErrorCode.ToString("X"));
-                            retry = true;
-                            retryNum++;
-                        }
-                        else
-                        {
-                            Stop();
-                        }
-                    }
-                } while (retry && retryNum < 35);
-
-                if (CameraDevice.GetCapability(CapabilityEnum.LiveViewStream))
-                {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(
-                        () => _videoSource.StartPlay(new Uri(CameraDevice.GetLiveViewStream()))));
-                }
-                else
-                {
-                    _timer.Elapsed += _timer_Elapsed;
-                    _timer.Start();
-                }
-
-                Log.Debug("LiveView: Liveview start done");
-            }
-            catch (Exception exception)
-            {
-                Log.Debug("Unable to start liveview ! " + exception.ToString());
-                StopWithErrorMessage();
-            }
-        }
-
-        void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            _timer.Stop();
-            Task.Factory.StartNew(GetLiveViewThread);
-        }
-
-        private void GetLiveViewThread()
-        {
-            Get();
-            _timer.Start();
-        }
-
-        void Get()
-        {
-            LiveViewData LiveViewData = null;
-            try
-            {
-                LiveViewData = CameraDevice.GetLiveViewImage();
-
-                if (LiveViewData != null && LiveViewData.ImageData != null)
-                {
-                    Bitmap bitmap = new Bitmap(new MemoryStream(LiveViewData.ImageData,
-                        LiveViewData.ImageDataPosition,
-                        LiveViewData.ImageData.Length - LiveViewData.ImageDataPosition));
-
-                    GridVideo.Dispatcher.Invoke(() => Video.Source = BitmapUtils.BitmapToImageSource(bitmap));
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Debug("Error occurred :" + ex.Message);
-                StopWithErrorMessage();
-            }
-        }
-
-        private void StopLiveView()
-        {
-            try
-            {
-                _timer.Stop();
-                var LiveViewData = CameraDevice.GetLiveViewImage();
-                if (LiveViewData.IsLiveViewRunning)
-                {
-                    CameraDevice.StopLiveView();
-                }
-            }
-            catch
-            {
-                // Do nothing
-            }
         }
 
 
         private void LaunchTimerVideo(int duration)
         {
-            StartLiveView();
-            CounterVideo.Visibility = Visibility.Visible;
-            CounterVideo.Text = duration.ToString();
-            _timerStartVideo = new Timer(OnTimerVideo, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+            StopButton.IsEnabled = true;
+            _counterVideo = duration;
+            _timerVideo = new Timer(OnTimerVideo, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
         }
 
         private void OnTimerVideo(object status)
         {
             GridVideo.Dispatcher.Invoke(() =>
             {
-                int counter = Int32.Parse(CounterVideo.Text);
-                if (counter-- > 0)
+                _counterVideo--;
+                if (_counterVideo < 1)
                 {
-                    CounterVideo.Text = counter.ToString();
+                    _timerVideo.Dispose();
+                    _timerVideo = null;
+
+                    StopWithEndMessage();
+                }
+                else if (_counterVideo == 1)
+                {
+                    ButtonImageStop.Visibility = Visibility.Hidden;
+                    ButtonImage5.Visibility = Visibility.Hidden;
+                    ButtonImage4.Visibility = Visibility.Hidden;
+                    ButtonImage3.Visibility = Visibility.Hidden;
+                    ButtonImage2.Visibility = Visibility.Hidden;
+                    ButtonImage1.Visibility = Visibility.Visible;
+
+                }
+                else if (_counterVideo == 2)
+                {
+                    ButtonImageStop.Visibility = Visibility.Hidden;
+                    ButtonImage5.Visibility = Visibility.Hidden;
+                    ButtonImage4.Visibility = Visibility.Hidden;
+                    ButtonImage3.Visibility = Visibility.Hidden;
+                    ButtonImage2.Visibility = Visibility.Visible;
+                    ButtonImage1.Visibility = Visibility.Hidden;
+                }
+                else if (_counterVideo == 3)
+                {
+                    ButtonImageStop.Visibility = Visibility.Hidden;
+                    ButtonImage5.Visibility = Visibility.Hidden;
+                    ButtonImage4.Visibility = Visibility.Hidden;
+                    ButtonImage3.Visibility = Visibility.Visible;
+                    ButtonImage2.Visibility = Visibility.Hidden;
+                    ButtonImage1.Visibility = Visibility.Hidden;
+                }
+                else if (_counterVideo == 4)
+                {
+                    ButtonImageStop.Visibility = Visibility.Hidden;
+                    ButtonImage5.Visibility = Visibility.Hidden;
+                    ButtonImage4.Visibility = Visibility.Visible;
+                    ButtonImage3.Visibility = Visibility.Hidden;
+                    ButtonImage2.Visibility = Visibility.Hidden;
+                    ButtonImage1.Visibility = Visibility.Hidden;
+                }
+                else if (_counterVideo == 5)
+                {
+                    ButtonImageStop.Visibility = Visibility.Hidden;
+                    ButtonImage5.Visibility = Visibility.Visible;
+                    ButtonImage4.Visibility = Visibility.Hidden;
+                    ButtonImage3.Visibility = Visibility.Hidden;
+                    ButtonImage2.Visibility = Visibility.Hidden;
+                    ButtonImage1.Visibility = Visibility.Hidden;
                 }
                 else
                 {
-                    _timerStartVideo.Dispose();
-                    Stop();
+                    ButtonImageStop.Visibility = Visibility.Visible;
+                    ButtonImage5.Visibility = Visibility.Hidden;
+                    ButtonImage4.Visibility = Visibility.Hidden;
+                    ButtonImage3.Visibility = Visibility.Hidden;
+                    ButtonImage2.Visibility = Visibility.Hidden;
+                    ButtonImage1.Visibility = Visibility.Hidden;
+                    
+                    TextBeforeVideo.Visibility = Visibility.Hidden;
+                    StopButton.Visibility = Visibility.Visible;
+                    Video.Visibility = Visibility.Visible;
                 }
             });
         }
@@ -232,7 +169,7 @@ namespace face_o_maton
         {
             try
             {
-                string resp = _recording ? "" : CameraDevice.GetProhibitionCondition(OperationEnum.RecordMovie);
+                string resp = _recording ? "" : _cameraDevice.GetProhibitionCondition(OperationEnum.RecordMovie);
                 if (string.IsNullOrEmpty(resp))
                 {
                     LaunchTimerVideo(10);
@@ -256,9 +193,8 @@ namespace face_o_maton
         {
             try
             {
-                CameraDevice.StartRecordMovie();
+                _cameraDevice.StartRecordMovie();
                 _recording = true;
-                _recordStartTime = DateTime.Now;
             }
             catch (Exception ex)
             {
@@ -271,6 +207,7 @@ namespace face_o_maton
         {
             var thread = new Thread(StopRecordMovieThread);
             thread.Start();
+
         }
 
         private void StopRecordMovieThread()
@@ -278,7 +215,7 @@ namespace face_o_maton
             try
             {
                 _recording = false;
-                CameraDevice.StopRecordMovie();
+                _cameraDevice.StopRecordMovie();
             }
             catch (Exception ex)
             {
@@ -292,36 +229,93 @@ namespace face_o_maton
             ErrorMessage.Visibility = Visibility.Visible;
 
             // Mask all
-            CounterBeforeVideo.Visibility = Visibility.Hidden;
-            CounterVideo.Visibility = Visibility.Hidden;
+            TextBeforeVideo.Visibility = Visibility.Hidden;
+
+            ButtonImageStop.Visibility = Visibility.Hidden;
+            ButtonImage5.Visibility = Visibility.Hidden;
+            ButtonImage4.Visibility = Visibility.Hidden;
+            ButtonImage3.Visibility = Visibility.Hidden;
+            ButtonImage2.Visibility = Visibility.Hidden;
+            ButtonImage1.Visibility = Visibility.Hidden;
+            ButtonImage0.Visibility = Visibility.Hidden;
+
             Video.Visibility = Visibility.Hidden;
 
             StopAfterTimer();
         }
 
+
+
         private void StopAfterTimer()
         {
             // Launch timer
+            _timerBeforeStopping = new System.Timers.Timer(2000);
             _timerBeforeStopping.Elapsed += TimerBeforeStoppingElapsed;
             _timerBeforeStopping.Start();
         }
 
         void TimerBeforeStoppingElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            _timerBeforeStopping.Stop();
+            _timerBeforeStopping.Dispose();
+            _timerBeforeStopping = null;
+
             GridVideo.Dispatcher.Invoke(() => Stop());
         }
 
+        private void StopWithEndMessage()
+        {
+            // Display end message
+            EndMessage.Visibility = Visibility.Visible;
+            
+            // Mask all
+            Video.Visibility = Visibility.Hidden;
+            TextBeforeVideo.Visibility = Visibility.Hidden;
+            ButtonImageStop.Visibility = Visibility.Hidden;
+            ButtonImage5.Visibility = Visibility.Hidden;
+            ButtonImage4.Visibility = Visibility.Hidden;
+            ButtonImage3.Visibility = Visibility.Hidden;
+            ButtonImage2.Visibility = Visibility.Hidden;
+            ButtonImage1.Visibility = Visibility.Hidden;
+            ButtonImage0.Visibility = Visibility.Hidden;
+            StopButton.Visibility = Visibility.Hidden;
+            StopButton.IsEnabled = false;
+
+            StopAfterTimer();
+        }
+    
+
         private void Stop()
         {
-            StopLiveView();
+            StopButton.IsEnabled = false;
+            _liveView.Stop();
             if (_recording)
             {
                 StopRecordMovie();
             }
-
-            _playMain();
             Hide();
+            TextBeforeVideo.Visibility = Visibility.Hidden;
+            EndMessage.Visibility = Visibility.Hidden;
+            ErrorMessage.Visibility = Visibility.Hidden;
+            Video.Visibility = Visibility.Hidden;
+            ButtonImageStop.Visibility = Visibility.Hidden;
+            ButtonImage5.Visibility = Visibility.Hidden;
+            ButtonImage4.Visibility = Visibility.Hidden;
+            ButtonImage3.Visibility = Visibility.Hidden;
+            ButtonImage2.Visibility = Visibility.Hidden;
+            ButtonImage1.Visibility = Visibility.Hidden;
+            ButtonImage0.Visibility = Visibility.Hidden;
+
+            StopButton.Visibility = Visibility.Hidden;
+            StopButton.IsEnabled = false;
+            _playMain();
+        }
+
+        private void Button_stop_Click(object sender, RoutedEventArgs e)
+        {
+            _timerVideo.Dispose();
+            _timerVideo = null;
+
+            GridVideo.Dispatcher.Invoke(() => StopWithEndMessage());
         }
     }
 }

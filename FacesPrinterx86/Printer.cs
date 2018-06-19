@@ -35,17 +35,21 @@ namespace FacesPrinterx86
             var doc = new Document();
             if (doc.Open(templatePath) != false)
             {
-                String qrCodeString = Properties.Settings.Default.Url;
+
+                String qrCodeString = String.Empty;
+                Char delimiter = '\\';
                 for (var i = 0; i < photos.Count; i++)
                 {
                     var path = photos[i].Remove(0, Path.GetPathRoot(photos[i]).Length);
                     path = path.Remove(path.Length - Path.GetExtension(photos[i]).Length, Path.GetExtension(photos[i]).Length);
+                    String[] substrings = path.Split(delimiter);
                     if (qrCodeString != String.Empty)
                     {
-                        qrCodeString += ";" ;
+                        qrCodeString += "," ;
                     }
-                    qrCodeString += path;
+                    qrCodeString += substrings[substrings.Length - 1];
                 }
+                qrCodeString  = Properties.Settings.Default.Url + qrCodeString;
                 QrEncoder qrEncoder = new QrEncoder(ErrorCorrectionLevel.M);
                 QrCode qrCode = qrEncoder.Encode(qrCodeString);
 

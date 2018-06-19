@@ -13,12 +13,12 @@
 
         <Button x:Name="Button_change_left" Content="Button" Width="150" HorizontalAlignment="Left" Click="Button_change_left_Click">
             <Button.Background>
-                <SolidColorBrush Color="Blue" Opacity="0.3" />
+                <SolidColorBrush Color="Black" Opacity="0.3" />
             </Button.Background>
         </Button>
         <Button  x:Name="Button_change_right" Content="Button" Width="150" HorizontalAlignment="Right" Click="Button_change_right_Click">
             <Button.Background>
-                <SolidColorBrush Color="Blue" Opacity="0.3" />
+                <SolidColorBrush Color="Black" Opacity="0.3" />
             </Button.Background>
         </Button>
         <Button  x:Name="Button_stop" Content="Button" HorizontalAlignment="Center" Width="150" Height="150" VerticalAlignment="Bottom" Click="Button_stop_Click">
