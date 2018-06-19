@@ -172,7 +172,7 @@ namespace face_o_maton
                 string resp = _recording ? "" : _cameraDevice.GetProhibitionCondition(OperationEnum.RecordMovie);
                 if (string.IsNullOrEmpty(resp))
                 {
-                    LaunchTimerVideo(10);
+                    LaunchTimerVideo(30);
                     var thread = new Thread(RecordMovieThread);
                     thread.Start();
                 }
