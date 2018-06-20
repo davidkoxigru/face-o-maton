@@ -28,15 +28,16 @@ namespace face_o_maton
         private int _nbPhotos;
         private int _nbPrints;
         private List<String> _photos;
-        private Action _playMain;
+        private Action<Boolean> _playMain;
         private Action _decreaseNbColorPictures;
         private LiveView _liveView;
+        private Boolean _error = false;
 
         public ICameraDevice _cameraDevice { get; set; }
 
         FacesCreation _facesCreation = new FacesCreation();
 
-        public PhotoWindow(CameraDeviceManager DeviceManager, Action PlayMain, Action DecreaseNbColorPictures)
+        public PhotoWindow(CameraDeviceManager DeviceManager, Action<Boolean> PlayMain, Action DecreaseNbColorPictures)
         {
             InitializeComponent();
 
@@ -211,6 +212,8 @@ namespace face_o_maton
             {
                 PrintMessage.Visibility = Visibility.Visible;
                 Print.Visibility = Visibility.Visible;
+                FourPictures.Visibility = Visibility.Hidden;
+                Photo.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -221,6 +224,8 @@ namespace face_o_maton
             // Step -1 Error
             if (step == -1)
             {
+                FourPictures.Visibility = Visibility.Hidden;
+                Photo.Visibility = Visibility.Hidden;
                 ErrorMessage.Visibility = Visibility.Visible;
             }
             else
@@ -234,6 +239,7 @@ namespace face_o_maton
             _nbPhotos = nbPhotos;
             _printer = printer;
             _nbPrints = nbPrints;
+            _error = false;
 
             Show();
             VisibilityManagement(1);
@@ -404,9 +410,11 @@ namespace face_o_maton
 
                 _photos.Add(fileName);
 
-                _timerWatchDog.Dispose();
-                _timerWatchDog = null;
-
+                if (_timerWatchDog != null)
+                {
+                    _timerWatchDog.Dispose();
+                    _timerWatchDog = null;
+                }
                 if (_photos.Count >=_nbPhotos)
                 {
                     _photos.ForEach(p => _facesCreation.EnqueueFileName(p));
@@ -517,6 +525,7 @@ namespace face_o_maton
 
         private void StopWithErrorMessage()
         {
+            _error = true;
             GridPhoto.Dispatcher.Invoke(() => VisibilityManagement(-1));
 
             if (_liveView != null)
@@ -524,13 +533,18 @@ namespace face_o_maton
                 _liveView.Stop();
                 _liveView = null;
             }
-            
-            // Stop all timers 
-            _timerStartCapture.Dispose();
-            _timerStartCapture = null;
 
-            _timerWatchDog.Dispose();
-            _timerWatchDog = null;
+            // Stop all timers
+            if (_timerStartCapture != null)
+            {
+                _timerStartCapture.Dispose();
+                _timerStartCapture = null;
+            }
+
+            if (_timerWatchDog != null) { 
+                _timerWatchDog.Dispose();
+                _timerWatchDog = null;
+            }
 
             StopAfterTimer();
         }
@@ -564,7 +578,7 @@ namespace face_o_maton
         {
             _timerBeforeStoppingPhoto.Dispose();
             _timerBeforeStoppingPhoto = null;
-
+            
             GridPhoto.Dispatcher.Invoke(() => Stop());
         }
 
@@ -591,7 +605,7 @@ namespace face_o_maton
 
             GridPhoto.Dispatcher.Invoke(() => VisibilityManagement(0));
             
-            _playMain();
+            _playMain(_error);
             Hide();
         }
     }

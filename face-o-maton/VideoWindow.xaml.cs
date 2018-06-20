@@ -17,17 +17,18 @@ namespace face_o_maton
     {
         private int _counterBeforeVideo;
         private int _counterVideo;
-        private Action _playMain;
+        private Action<Boolean> _playMain;
         private LiveView _liveView;
         private Timer _timerStartVideo;
         private Timer _timerVideo;
         private bool _recording;
+        private Boolean _error = false;
 
         private System.Timers.Timer _timerBeforeStopping;
 
         public ICameraDevice _cameraDevice { get; set; }
 
-        public VideoWindow(CameraDeviceManager DeviceManager, Action PlayMain)
+        public VideoWindow(CameraDeviceManager DeviceManager, Action<Boolean> PlayMain)
         {
             InitializeComponent();
 
@@ -41,7 +42,10 @@ namespace face_o_maton
 
         public void Open()
         {
+            _error = false;
+
             Show();
+            
             TextBeforeVideo.Visibility = Visibility.Hidden;
             EndMessage.Visibility = Visibility.Hidden;
             ErrorMessage.Visibility = Visibility.Hidden;
@@ -225,6 +229,19 @@ namespace face_o_maton
         }
         private void StopWithErrorMessage()
         {
+            _error = true;
+            if (_timerStartVideo != null) 
+            {
+                _timerStartVideo.Dispose();
+                _timerStartVideo = null;
+            }
+
+            if (_timerVideo != null)
+            {
+                _timerVideo.Dispose();
+                _timerVideo = null;
+            }
+             
             // Display error message
             ErrorMessage.Visibility = Visibility.Visible;
 
@@ -248,10 +265,13 @@ namespace face_o_maton
 
         private void StopAfterTimer()
         {
-            // Launch timer
-            _timerBeforeStopping = new System.Timers.Timer(2000);
-            _timerBeforeStopping.Elapsed += TimerBeforeStoppingElapsed;
-            _timerBeforeStopping.Start();
+            if (_timerBeforeStopping == null)
+            {
+                // Launch timer
+                _timerBeforeStopping = new System.Timers.Timer(2000);
+                _timerBeforeStopping.Elapsed += TimerBeforeStoppingElapsed;
+                _timerBeforeStopping.Start();
+            }
         }
 
         void TimerBeforeStoppingElapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -307,13 +327,16 @@ namespace face_o_maton
 
             StopButton.Visibility = Visibility.Hidden;
             StopButton.IsEnabled = false;
-            _playMain();
+            _playMain(_error);
         }
 
         private void Button_stop_Click(object sender, RoutedEventArgs e)
         {
-            _timerVideo.Dispose();
-            _timerVideo = null;
+            if (_timerVideo != null)
+            {
+                _timerVideo.Dispose();
+                _timerVideo = null;
+            }
 
             GridVideo.Dispatcher.Invoke(() => StopWithEndMessage());
         }

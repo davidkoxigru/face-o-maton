@@ -133,12 +133,19 @@ namespace face_o_maton
         {
             try
             {
-                _timerLiveView.Dispose();
-                _timerLiveView = null;
-                var LiveViewData = _cameraDevice.GetLiveViewImage();
-                if (LiveViewData.IsLiveViewRunning)
+                if (_timerLiveView != null)
                 {
-                    _cameraDevice.StopLiveView();
+                    _timerLiveView.Dispose();
+                    _timerLiveView = null;
+                }
+
+                if (_cameraDevice != null)
+                {
+                    var liveViewData = _cameraDevice.GetLiveViewImage();
+                    if (liveViewData != null && liveViewData.IsLiveViewRunning)
+                    {
+                        _cameraDevice.StopLiveView();
+                    }
                 }
             }
             catch

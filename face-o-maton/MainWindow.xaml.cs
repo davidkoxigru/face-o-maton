@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Threading;
 using System.Windows;
 
 namespace face_o_maton
@@ -22,6 +23,7 @@ namespace face_o_maton
         private const int _nbMaxColorPictures = 18;
         private int _nbColorPictures = _nbMaxColorPictures;
         private int _AdminActiveCount = 0;
+        private int _nbError = 0;
 
         public CameraDeviceManager DeviceManager;
 
@@ -50,10 +52,8 @@ namespace face_o_maton
         
         public void DecreaseNbColorPictures()
         {
-
             _nbColorPictures--;
             CheckColorPicturesButtons();
-
         }
 
         private void CheckColorPicturesButtons()
@@ -216,9 +216,33 @@ namespace face_o_maton
             }
         }
 
-        public void Callback()
+        public void Callback(Boolean error)
         {
-            StartVideo();
+            if (error) _nbError++;
+            else _nbError = 0;
+
+            if (_nbError == 3)
+            {
+                MainGrid.Dispatcher.Invoke(() =>
+                {
+                    FondErrorMessage.Visibility = Visibility.Visible;
+                    ErrorMessage.Visibility = Visibility.Visible;
+                });
+                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+                ThreadStart ts = delegate ()
+                {
+                    Dispatcher.BeginInvoke((Action)delegate ()
+                    {
+                        Application.Current.Shutdown();
+                    });
+                };
+                Thread t = new Thread(ts);
+                t.Start();
+            } 
+            else
+            {
+                StartVideo();
+            }
         }
 
         public void AdminCallback (int nbColorPictures)
