@@ -107,7 +107,10 @@ namespace face_o_maton
         private void GetLiveViewThread()
         {
             Get();
-            _timerLiveView.Start();
+            if (_timerLiveView != null)
+            {
+                _timerLiveView.Start();
+            }
         }
 
         void Get()

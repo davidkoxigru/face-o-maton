@@ -145,7 +145,7 @@ namespace face_o_maton
                 GraphicsUnit.Pixel);
 
             grPhoto.DrawImage(logo,
-                new Rectangle(posX + destWidth - logoDestHeight - 20, posY + destHeight - logoDestHeight - 20, logoDestWidth, logoDestHeight),
+                new Rectangle(posX + destWidth - logoDestWidth - 20, posY + destHeight - logoDestHeight - 20, logoDestWidth, logoDestHeight),
                 new Rectangle(0, 0, logo.Width, logo.Height),
                 GraphicsUnit.Pixel);
         }
