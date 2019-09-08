@@ -35,21 +35,7 @@ namespace FacesPrinterx86
             var doc = new Document();
             if (doc.Open(templatePath) != false)
             {
-
-                String qrCodeString = String.Empty;
-                Char delimiter = '\\';
-                for (var i = 0; i < photos.Count; i++)
-                {
-                    var path = photos[i].Remove(0, Path.GetPathRoot(photos[i]).Length);
-                    path = path.Remove(path.Length - Path.GetExtension(photos[i]).Length, Path.GetExtension(photos[i]).Length);
-                    String[] substrings = path.Split(delimiter);
-                    if (qrCodeString != String.Empty)
-                    {
-                        qrCodeString += "," ;
-                    }
-                    qrCodeString += substrings[substrings.Length - 1];
-                }
-                qrCodeString  = Properties.Settings.Default.Url + qrCodeString;
+                string qrCodeString = GetQrCodeString(photos);
                 QrEncoder qrEncoder = new QrEncoder(ErrorCorrectionLevel.M);
                 QrCode qrCode = qrEncoder.Encode(qrCodeString);
 
@@ -61,11 +47,11 @@ namespace FacesPrinterx86
                 }
                 doc.GetObject("QrCode").SetData(0, qrCodePath, 4);
 
-                for (var i = 0; i < photos.Count; i ++)
+                for (var i = 0; i < photos.Count; i++)
                 {
                     doc.GetObject("Photo" + i).SetData(0, photos[i], 4);
                 }
-                
+
                 doc.SetPrinter("Brother QL-500", false);
                 doc.Printer.GetInstalledPrinters();
                 doc.SetMediaById(doc.Printer.GetMediaId(), true);
@@ -74,6 +60,25 @@ namespace FacesPrinterx86
                 doc.EndPrint();
                 doc.Close();
             }
+        }
+
+        private static string GetQrCodeString(List<string> photos)
+        {
+            String qrCodeString = String.Empty;
+            Char delimiter = '\\';
+            for (var i = 0; i < photos.Count; i++)
+            {
+                var path = photos[i].Remove(0, Path.GetPathRoot(photos[i]).Length);
+                path = path.Remove(path.Length - Path.GetExtension(photos[i]).Length, Path.GetExtension(photos[i]).Length);
+                String[] substrings = path.Split(delimiter);
+                if (qrCodeString != String.Empty)
+                {
+                    qrCodeString += ",";
+                }
+                qrCodeString += substrings[substrings.Length - 1];
+            }
+            qrCodeString = Properties.Settings.Default.Url; // + qrCodeString;
+            return qrCodeString;
         }
     }
 }

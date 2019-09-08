@@ -1,4 +1,5 @@
 ﻿using CameraControl.Devices;
+using GooglePhotoUploader;
 using System;
 using System.IO;
 using System.Linq;
@@ -36,9 +37,16 @@ namespace face_o_maton
 #endif
             StartCamera();
 
-            _adminWindow = new AdminWindow(_nbMaxColorPictures, AdminCallback);
+            _adminWindow = new AdminWindow(_nbMaxColorPictures, null);
             _videoWindow = new VideoWindow(DeviceManager, Callback);
-            _photoWindow = new PhotoWindow(DeviceManager, Callback, DecreaseNbColorPictures);
+            _photoWindow = new PhotoWindow(DeviceManager, Callback, null, 
+                new GPhotosUploader(
+                    Properties.Settings.Default.GoogleCredentialsFile,
+                    Properties.Settings.Default.GoogleTokenStoreFolder,
+                    Properties.Settings.Default.GoogleAlbumName,
+                    Properties.Settings.Default.GoogleUserName,
+                    Properties.Settings.Default.FacesPath)
+                );
 
             // _mixFacesWindow = new MixFacesWindow(Play);
 
@@ -50,80 +58,29 @@ namespace face_o_maton
             }
         }
         
-        public void DecreaseNbColorPictures()
-        {
-            _nbColorPictures--;
-            CheckColorPicturesButtons();
-        }
 
-        private void CheckColorPicturesButtons()
-        {
-            // Create a file to write to.
-            string createText = _nbColorPictures.ToString();
-            File.WriteAllText(Directory.GetCurrentDirectory() + _path, createText);
-
-
-            if (_nbColorPictures <= 0)
-            {
-                MainGrid.Dispatcher.Invoke(() =>
-                {
-                    // Disabled buttons with color printer
-                    Photo_Button_1_Color_1.IsEnabled = false;
-                    Photo_Button_1_Color_4.IsEnabled = false;
-                    Photo_Button_4_Color_4.IsEnabled = false;
-                    Disabled_1_Color_1_Click.Visibility = Visibility.Visible;
-                    Disabled_1_Color_4_Click.Visibility = Visibility.Visible;
-                    Disabled_4_Color_4_Click.Visibility = Visibility.Visible;
-                });
-            }
-            else
-            {
-                MainGrid.Dispatcher.Invoke(() =>
-                {
-                    // Enabled buttons with color printer
-                    Photo_Button_1_Color_1.IsEnabled = true;
-                    Photo_Button_1_Color_4.IsEnabled = true;
-                    Photo_Button_4_Color_4.IsEnabled = true;
-                    Disabled_1_Color_1_Click.Visibility = Visibility.Hidden;
-                    Disabled_1_Color_4_Click.Visibility = Visibility.Hidden;
-                    Disabled_4_Color_4_Click.Visibility = Visibility.Hidden;
-                });
-            }
-            }
-
-        private void Video_Button_Click(object sender, RoutedEventArgs e)
-        {
-            //MainGrid.Dispatcher.Invoke(() => StopVideo());
-            StopVideo();
-            _videoWindow.Open();
-        }
 
         private void Photo_Button_1_Sticker_1_Click(object sender, RoutedEventArgs e)
         {
-            StopVideo();
             _photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 1);
         }
 
         private void Photo_Button_4_Sticker_4_Click(object sender, RoutedEventArgs e)
         {
-            StopVideo();
             _photoWindow.Open(4, FacesPrinter.PrinterType.Sticker, 4);
         }
 
         private void Photo_Button_1_Color_1_Click(object sender, RoutedEventArgs e)
         {
-            StopVideo();
             _photoWindow.Open(1, FacesPrinter.PrinterType.Color, 1);
         }
 
         private void Photo_Button_1_Color_4_Click(object sender, RoutedEventArgs e)
         {
-            StopVideo();
             _photoWindow.Open(1, FacesPrinter.PrinterType.Color, 4);
         }
         private void Photo_Button_4_Color_4_Click(object sender, RoutedEventArgs e)
         {
-            StopVideo();
             _photoWindow.Open(4, FacesPrinter.PrinterType.Color, 4);
         }
 
@@ -205,8 +162,6 @@ namespace face_o_maton
         {
             if (_AdminActiveCount == 3)
             {
-                StopVideo();
-
                 // Open admin screen 
                 _adminWindow.Open(_nbColorPictures);
             }
@@ -239,45 +194,11 @@ namespace face_o_maton
                 Thread t = new Thread(ts);
                 t.Start();
             } 
-            else
-            {
-                StartVideo();
-            }
         }
-
-        public void AdminCallback (int nbColorPictures)
-        {
-            _nbColorPictures = nbColorPictures;
-            CheckColorPicturesButtons();
-            StartVideo();
-        }
+        
 
         private void Element_MediaOpened(object sender, RoutedEventArgs e)
         {
-            // Play video
-            StartVideo();
-        }
-
-        private void Element_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            // Play video again
-            RestartVideo();
-        }
-
-        private void RestartVideo()
-        {
-            myMediaElement.Position = TimeSpan.FromSeconds(0);
-            myMediaElement.Play();
-        }
-
-        private void StartVideo()
-        {
-            myMediaElement.Play();
-        }
-
-        private void StopVideo()
-        {
-            myMediaElement.Stop();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CameraControl.Devices;
 using CameraControl.Devices.Classes;
 using FacesCreationLib;
+using GooglePhotoUploader;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,17 +28,19 @@ namespace face_o_maton
         private FacesPrinter.PrinterType _printer;
         private int _nbPhotos;
         private int _nbPrints;
-        private List<String> _photos;
+        private List<PhotoPath> _photos;
         private Action<Boolean> _playMain;
         private Action _decreaseNbColorPictures;
         private LiveView _liveView;
         private Boolean _error = false;
 
+        private IGPhotosUploader _uploader;
+
         public ICameraDevice _cameraDevice { get; set; }
 
         FacesCreation _facesCreation = new FacesCreation();
 
-        public PhotoWindow(CameraDeviceManager DeviceManager, Action<Boolean> PlayMain, Action DecreaseNbColorPictures)
+        public PhotoWindow(CameraDeviceManager DeviceManager, Action<Boolean> PlayMain, Action DecreaseNbColorPictures, IGPhotosUploader gPhotosUploader)
         {
             InitializeComponent();
 
@@ -48,6 +51,9 @@ namespace face_o_maton
             _decreaseNbColorPictures = DecreaseNbColorPictures;
 
             _cameraDevice = DeviceManager.SelectedCameraDevice;
+
+            _uploader = gPhotosUploader;
+
             VisibilityManagement(0);
         }
 
@@ -244,7 +250,7 @@ namespace face_o_maton
             Show();
             VisibilityManagement(1);
 
-            _photos = new List<string>();
+            _photos = new List<PhotoPath>();
 
             _cameraDevice.PhotoCaptured += DeviceManager_PhotoCaptured;
             _cameraDevice.WaitForReady();
@@ -310,9 +316,10 @@ namespace face_o_maton
         
         private void PhotoCapture()
         {
-            _timerWatchDog = new System.Threading.Timer(OnTimerWatchDogElapsed, null, TimeSpan.FromSeconds(30), TimeSpan.FromMilliseconds(-1));
+            _timerWatchDog = new System.Threading.Timer(OnTimerWatchDogElapsed, null, TimeSpan.FromSeconds(60), TimeSpan.FromMilliseconds(-1));
 
             Thread thread = new Thread(Capture);
+            Log.Debug("Capturte thread: " + thread.Name);
             thread.Start();
         }
 
@@ -361,6 +368,7 @@ namespace face_o_maton
         {
             // to prevent UI freeze start the transfer process in a new thread
             Thread thread = new Thread(PhotoCaptured);
+            Log.Debug("Photo capture in thread  :" + thread.Name);
             thread.Start(eventArgs);
         }
 
@@ -407,18 +415,21 @@ namespace face_o_maton
 
                 File.Copy(tempFile, fileName);
                 WaitForFile(fileName);
-
-                _photos.Add(fileName);
+                File.Delete(tempFile);
 
                 if (_timerWatchDog != null)
                 {
                     _timerWatchDog.Dispose();
                     _timerWatchDog = null;
                 }
-                if (_photos.Count >=_nbPhotos)
-                {
-                    _photos.ForEach(p => _facesCreation.EnqueueFileName(p));
-                }
+
+                _photos.Add(Upload(fileName, false));
+
+                //if (_photos.Count >=_nbPhotos)
+                //{
+                //    _photos.ForEach(p => _facesCreation.EnqueueFileName(p.fileName));
+                //}
+
                 GridPhoto.Dispatcher.Invoke(() => DisplayPrintPhotos());
             }
             catch (Exception ex)
@@ -437,22 +448,22 @@ namespace face_o_maton
                 {
                     if (_nbPrints == 1)
                     {
-                        DisplayPicture(Photo, _photos[0], EndDisplayCallback);
+                        DisplayPicture(Photo, _photos[0].fileName, EndDisplayCallback);
                     }
                     else
                     {
-                        DisplayPicture(Photo0, _photos[0], null);
-                        DisplayPicture(Photo1, _photos[0], null);
-                        DisplayPicture(Photo2, _photos[0], null);
-                        DisplayPicture(Photo3, _photos[0], EndDisplayCallback);
+                        DisplayPicture(Photo0, _photos[0].fileName, null);
+                        DisplayPicture(Photo1, _photos[0].fileName, null);
+                        DisplayPicture(Photo2, _photos[0].fileName, null);
+                        DisplayPicture(Photo3, _photos[0].fileName, EndDisplayCallback);
                     }
                 }
                 else 
                 {
-                    if (_photos.Count == 1) DisplayPicture(Photo0, _photos[0], LaunchTimerBeforeCapture);
-                    else if (_photos.Count == 2) DisplayPicture(Photo1, _photos[1], LaunchTimerBeforeCapture);
-                    else if (_photos.Count == 3) DisplayPicture(Photo2, _photos[2], LaunchTimerBeforeCapture);
-                    else if (_photos.Count == 4) DisplayPicture(Photo3, _photos[3], EndDisplayCallback);
+                    if (_photos.Count == 1) DisplayPicture(Photo0, _photos[0].fileName, LaunchTimerBeforeCapture);
+                    else if (_photos.Count == 2) DisplayPicture(Photo1, _photos[1].fileName, LaunchTimerBeforeCapture);
+                    else if (_photos.Count == 3) DisplayPicture(Photo2, _photos[2].fileName, LaunchTimerBeforeCapture);
+                    else if (_photos.Count == 4) DisplayPicture(Photo3, _photos[3].fileName, EndDisplayCallback);
                 }
             }
             catch (Exception e)
@@ -472,7 +483,21 @@ namespace face_o_maton
                 }));
         }
 
-        private void EndDisplayCallback()
+        private PhotoPath Upload (String fileName, bool sync)
+        {
+            var photoPath = new PhotoPath(fileName);
+            if (sync)
+            {
+                photoPath = _uploader?.Upload(photoPath).GetAwaiter().GetResult();
+            } 
+            else
+            {
+                _uploader?.Upload(photoPath);
+            }
+            return photoPath;
+        }
+
+        private  void EndDisplayCallback()
         {
             VisibilityManagement(4);
         }

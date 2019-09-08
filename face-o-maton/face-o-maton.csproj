@@ -169,7 +169,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FacesCreationLib\FacesCreationLib.csproj">
@@ -183,6 +185,10 @@
     <ProjectReference Include="..\FacesProj\FacesProj.csproj">
       <Project>{6d5fe215-ec8c-47c8-a7eb-6530d62670ad}</Project>
       <Name>FacesProj</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GooglePhotoUploader\GooglePhotoUploader.csproj">
+      <Project>{87D3633A-FBE6-4E79-A605-B48BD6775F40}</Project>
+      <Name>GooglePhotoUploader</Name>
     </ProjectReference>
     <ProjectReference Include="..\GrayscaleEffect\GrayscaleEffect.csproj">
       <Project>{7f9cd429-94f5-4bf0-9bac-1ae41d105e97}</Project>
@@ -265,9 +271,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Content Include="videos\rooney.mp4">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="pictures\CSWedding.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="pictures\Transparent.png">

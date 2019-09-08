@@ -12,7 +12,7 @@ namespace FacesPrinterx86.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -34,7 +34,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("LandscapeCSWedding.lbx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Landscape.lbx")]
         public string LandscapeTemplatePath {
             get {
                 return ((string)(this["LandscapeTemplatePath"]));
@@ -43,7 +43,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://www.koxigru.net/cswedding/index.html?photos=")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://photos.app.goo.gl/1jPAVD6ewFArKjR6A")]
         public string Url {
             get {
                 return ((string)(this["Url"]));
@@ -52,7 +52,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Landscape4CSWedding.lbx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Landscape4.lbx")]
         public string Landscape4Template {
             get {
                 return ((string)(this["Landscape4Template"]));

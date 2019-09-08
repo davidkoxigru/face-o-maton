@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using FacesPrinterInterface;
+using GooglePhotoUploader;
 
 namespace face_o_maton
 {
@@ -22,11 +24,11 @@ namespace face_o_maton
         static Lazy<FacesPrinterClient> _instance = new Lazy<FacesPrinterClient>(() => new FacesPrinterClient());
         public static FacesPrinterClient Instance { get { return _instance.Value; } }
 
-        public static bool Print(List<String> photos, int angle)
+        public static bool Print(List<PhotoPath> photos, int angle)
         {
             try
             {
-                return Instance.Call.Print(photos, angle);
+                return Instance.Call.Print(photos.Select(p => p.fileName).ToList(), angle);
             }
             catch
             {

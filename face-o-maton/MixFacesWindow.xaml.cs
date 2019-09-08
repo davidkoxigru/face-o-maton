@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GooglePhotoUploader;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
@@ -107,7 +108,7 @@ namespace face_o_maton
             Tuple<Bitmap, InterfaceProj.Json> imageAnim = _facesAnim.GetPrintImage();
             var filePath = _facesAnim.Save(imageAnim);
             
-            FacesPrinter.PrintSticker(PrinterCallback, new List <String> { filePath + @".jpg" }, imageAnim.Item2.angle);
+            FacesPrinter.PrintSticker(PrinterCallback, new List <PhotoPath> { new PhotoPath(filePath + @".jpg") }, imageAnim.Item2.angle);
         }
         private void PrinterCallback(Boolean printOk)
         {

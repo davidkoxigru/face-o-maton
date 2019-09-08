@@ -12,7 +12,7 @@ namespace face_o_maton.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -34,7 +34,7 @@ namespace face_o_maton.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("net.pipe://PC-DAVID/SoundSyncx86")]
+        [global::System.Configuration.DefaultSettingValueAttribute("net.pipe://ONDADA/SoundSyncx86")]
         public string SoundSyncx86Uri {
             get {
                 return ((string)(this["SoundSyncx86Uri"]));
@@ -43,7 +43,7 @@ namespace face_o_maton.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("net.pipe://PC-DAVID/Printerx86")]
+        [global::System.Configuration.DefaultSettingValueAttribute("net.pipe://ONDADA/Printerx86")]
         public string FacesPrinterx86Uri {
             get {
                 return ((string)(this["FacesPrinterx86Uri"]));
@@ -56,6 +56,42 @@ namespace face_o_maton.Properties {
         public string Printer {
             get {
                 return ((string)(this["Printer"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Google\\private\\tokenStore")]
+        public string GoogleTokenStoreFolder {
+            get {
+                return ((string)(this["GoogleTokenStoreFolder"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Google\\private\\credentials.json")]
+        public string GoogleCredentialsFile {
+            get {
+                return ((string)(this["GoogleCredentialsFile"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("face-o-maton")]
+        public string GoogleUserName {
+            get {
+                return ((string)(this["GoogleUserName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("FacesShare")]
+        public string GoogleAlbumName {
+            get {
+                return ((string)(this["GoogleAlbumName"]));
             }
         }
     }

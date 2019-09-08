@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GooglePhotoUploader;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -16,7 +17,7 @@ namespace face_o_maton
             Color
         }
 
-        public static void Print(Action<Boolean> callback, List<String> photos, int nbPrints, PrinterType printer)
+        public static void Print(Action<Boolean> callback, List<PhotoPath> photos, int nbPrints, PrinterType printer)
         {
             try
             {
@@ -35,7 +36,7 @@ namespace face_o_maton
             }
         }
 
-        private static void PrintColor(Action<Boolean> callback, List<String> photos, int nbPrints)
+        private static void PrintColor(Action<Boolean> callback, List<PhotoPath> photos, int nbPrints)
         {
             PrintDocument pd = new PrintDocument();
             PrintController printController = new StandardPrintController();
@@ -46,11 +47,11 @@ namespace face_o_maton
                 System.Drawing.Image i = null;
                 if (photos.Count == 1 && nbPrints == 1)
                 {
-                    i = ResizeOnePictureAndAddLogo(photos[0]);
+                    i = ResizeOnePictureAndAddLogo(photos[0].fileName);
                 }
                 else if (photos.Count == 1 && nbPrints == 4)
                 {
-                    i = ResizeFourPicturesAndAddLogo(new List<string> { photos[0], photos[0], photos[0], photos[0] });
+                    i = ResizeFourPicturesAndAddLogo(new List<PhotoPath> { photos[0], photos[0], photos[0], photos[0] });
                 }
                 else if (photos.Count == 4)
                 {
@@ -98,7 +99,7 @@ namespace face_o_maton
             return bmPhoto;
         }
 
-        public static System.Drawing.Image ResizeFourPicturesAndAddLogo(List<string> stPhotoPath)
+        public static System.Drawing.Image ResizeFourPicturesAndAddLogo(List<PhotoPath> stPhotoPath)
         {
             // Photo 770x510,  mmarge 15:  logo 150 x 135
             int destWidth = 1555;
@@ -109,10 +110,10 @@ namespace face_o_maton
             int logoDestHeight = 135;
             int marge = 15;
 
-            var imgPhoto0 = System.Drawing.Image.FromFile(stPhotoPath[0]);
-            var imgPhoto1 = System.Drawing.Image.FromFile(stPhotoPath[1]);
-            var imgPhoto2 = System.Drawing.Image.FromFile(stPhotoPath[2]);
-            var imgPhoto3 = System.Drawing.Image.FromFile(stPhotoPath[3]);
+            var imgPhoto0 = System.Drawing.Image.FromFile(stPhotoPath[0].fileName);
+            var imgPhoto1 = System.Drawing.Image.FromFile(stPhotoPath[1].fileName);
+            var imgPhoto2 = System.Drawing.Image.FromFile(stPhotoPath[2].fileName);
+            var imgPhoto3 = System.Drawing.Image.FromFile(stPhotoPath[3].fileName);
 
             Bitmap bmPhoto = new Bitmap(destWidth, destHeight, PixelFormat.Format24bppRgb);
             bmPhoto.SetResolution(imgPhoto0.HorizontalResolution, imgPhoto0.VerticalResolution);
@@ -150,7 +151,7 @@ namespace face_o_maton
                 GraphicsUnit.Pixel);
         }
 
-        public static void PrintSticker(Action<Boolean> callback, List<String> photos, int angle)
+        public static void PrintSticker(Action<Boolean> callback, List<PhotoPath> photos, int angle)
         {
             FacesPrinterClient.Print(photos, angle);
             callback(true);

@@ -6,13 +6,25 @@
       <Value Profile="(Default)">D:\Faces\</Value>
     </Setting>
     <Setting Name="SoundSyncx86Uri" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">net.pipe://PC-DAVID/SoundSyncx86</Value>
+      <Value Profile="(Default)">net.pipe://ONDADA/SoundSyncx86</Value>
     </Setting>
     <Setting Name="FacesPrinterx86Uri" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">net.pipe://PC-DAVID/Printerx86</Value>
+      <Value Profile="(Default)">net.pipe://ONDADA/Printerx86</Value>
     </Setting>
     <Setting Name="Printer" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Brother QL-500</Value>
+    </Setting>
+    <Setting Name="GoogleTokenStoreFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Google\private\tokenStore</Value>
+    </Setting>
+    <Setting Name="GoogleCredentialsFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Google\private\credentials.json</Value>
+    </Setting>
+    <Setting Name="GoogleUserName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">face-o-maton</Value>
+    </Setting>
+    <Setting Name="GoogleAlbumName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">FacesShare</Value>
     </Setting>
   </Settings>
 </SettingsFile>

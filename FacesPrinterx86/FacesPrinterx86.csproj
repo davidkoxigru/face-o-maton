@@ -218,10 +218,10 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Landscape4CSWedding.lbx">
+    <None Include="Landscape4.lbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="LandscapeCSWedding.lbx">
+    <None Include="Landscape.lbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
