@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="FacesPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">D:\Faces\</Value>
+      <Value Profile="(Default)">C:\face-o-maton\Faces\</Value>
     </Setting>
     <Setting Name="SoundSyncx86Uri" Type="System.String" Scope="Application">
       <Value Profile="(Default)">net.pipe://ONDADA/SoundSyncx86</Value>
@@ -24,7 +24,10 @@
       <Value Profile="(Default)">face-o-maton</Value>
     </Setting>
     <Setting Name="GoogleAlbumName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">FacesShare</Value>
+      <Value Profile="(Default)">40 is the new 20</Value>
+    </Setting>
+    <Setting Name="FacesBackUpPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\40isthenew20\</Value>
     </Setting>
   </Settings>
 </SettingsFile>

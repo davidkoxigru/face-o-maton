@@ -43,7 +43,7 @@ namespace FacesPrinterx86.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://photos.app.goo.gl/1jPAVD6ewFArKjR6A")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://photos.app.goo.gl/xgDgnrAhse6DLpT26")]
         public string Url {
             get {
                 return ((string)(this["Url"]));

@@ -9,7 +9,7 @@
       <Value Profile="(Default)">Landscape.lbx</Value>
     </Setting>
     <Setting Name="Url" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://photos.app.goo.gl/1jPAVD6ewFArKjR6A</Value>
+      <Value Profile="(Default)">https://photos.app.goo.gl/xgDgnrAhse6DLpT26</Value>
     </Setting>
     <Setting Name="Landscape4Template" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Landscape4.lbx</Value>

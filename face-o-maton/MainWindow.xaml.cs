@@ -45,7 +45,7 @@ namespace face_o_maton
                     Properties.Settings.Default.GoogleTokenStoreFolder,
                     Properties.Settings.Default.GoogleAlbumName,
                     Properties.Settings.Default.GoogleUserName,
-                    Properties.Settings.Default.FacesPath)
+                    Properties.Settings.Default.FacesBackUpPath)
                 );
 
             // _mixFacesWindow = new MixFacesWindow(Play);
@@ -58,8 +58,6 @@ namespace face_o_maton
             }
         }
         
-
-
         private void Photo_Button_1_Sticker_1_Click(object sender, RoutedEventArgs e)
         {
             _photoWindow.Open(1, FacesPrinter.PrinterType.Sticker, 1);
@@ -176,7 +174,7 @@ namespace face_o_maton
             if (error) _nbError++;
             else _nbError = 0;
 
-            if (_nbError == 3)
+            if (_nbError >= 2)
             {
                 MainGrid.Dispatcher.Invoke(() =>
                 {
@@ -196,9 +194,5 @@ namespace face_o_maton
             } 
         }
         
-
-        private void Element_MediaOpened(object sender, RoutedEventArgs e)
-        {
-        }
     }
 }

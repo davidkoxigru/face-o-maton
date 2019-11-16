@@ -33,6 +33,7 @@ namespace face_o_maton
         private Action _decreaseNbColorPictures;
         private LiveView _liveView;
         private Boolean _error = false;
+        private Boolean _photosSavedOk = false;
 
         private IGPhotosUploader _uploader;
 
@@ -43,10 +44,7 @@ namespace face_o_maton
         public PhotoWindow(CameraDeviceManager DeviceManager, Action<Boolean> PlayMain, Action DecreaseNbColorPictures, IGPhotosUploader gPhotosUploader)
         {
             InitializeComponent();
-
-#if !DEBUG
-            Topmost = true;
-#endif
+            
             _playMain = PlayMain;
             _decreaseNbColorPictures = DecreaseNbColorPictures;
 
@@ -72,10 +70,10 @@ namespace face_o_maton
                 PositionMessage.Visibility = Visibility.Hidden;
             }
 
-            
+
             // Step 2
             if (step == 2)
-            {   
+            {
                 WatchMessage.Visibility = Visibility.Visible;
                 if (_nbPhotos == 4)
                 {
@@ -158,7 +156,7 @@ namespace face_o_maton
                         Wait.Visibility = Visibility.Visible;
                     }
                 }
-            } 
+            }
             else
             {
                 WaitDownloadMessage.Visibility = Visibility.Hidden;
@@ -203,7 +201,7 @@ namespace face_o_maton
                 PrintButton.IsEnabled = true;
                 CancelButton.Visibility = Visibility.Visible;
                 CancelButton.IsEnabled = true;
-            } 
+            }
             else
             {
                 AskPrintMessage.Visibility = Visibility.Hidden;
@@ -254,7 +252,7 @@ namespace face_o_maton
 
             _cameraDevice.PhotoCaptured += DeviceManager_PhotoCaptured;
             _cameraDevice.WaitForReady();
-            
+
             _liveView = new LiveView(_cameraDevice, Stop);
             _liveView.Start(Preview, true);
             _timerPreview = new System.Threading.Timer(OnTimerPreview, null, TimeSpan.FromSeconds(5), TimeSpan.FromMilliseconds(-1));
@@ -267,7 +265,7 @@ namespace face_o_maton
                 _liveView.Stop();
                 _cameraDevice.WaitForReady();
                 VisibilityManagement(2);
-                LaunchTimerBeforeCapture();          
+                LaunchTimerBeforeCapture();
             });
         }
 
@@ -313,7 +311,7 @@ namespace face_o_maton
         {
             GridPhoto.Dispatcher.Invoke(() => PhotoCapture());
         }
-        
+
         private void PhotoCapture()
         {
             _timerWatchDog = new System.Threading.Timer(OnTimerWatchDogElapsed, null, TimeSpan.FromSeconds(60), TimeSpan.FromMilliseconds(-1));
@@ -385,17 +383,7 @@ namespace face_o_maton
                 });
 
                 eventArgs.CameraDevice.IsBusy = true;
-                var date = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-                var fileName = Properties.Settings.Default.FacesPath + date + ".jpg";
-
-                // check the folder of filename, if not found create it
-                if (!Directory.Exists(Path.GetDirectoryName(fileName)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-                }
-
                 string tempFile = Path.GetTempFileName();
-
                 if (File.Exists(tempFile))
                     File.Delete(tempFile);
 
@@ -413,6 +401,15 @@ namespace face_o_maton
                     eventArgs.CameraDevice.DeleteObject(new DeviceObject() { Handle = eventArgs.Handle });
                 }
 
+
+                var date = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+                var fileName = Properties.Settings.Default.FacesPath + date + ".jpg";
+
+                // check the folder of filename, if not found create it
+                if (!Directory.Exists(Path.GetDirectoryName(fileName)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+                }
                 File.Copy(tempFile, fileName);
                 WaitForFile(fileName);
                 File.Delete(tempFile);
@@ -458,7 +455,7 @@ namespace face_o_maton
                         DisplayPicture(Photo3, _photos[0].fileName, EndDisplayCallback);
                     }
                 }
-                else 
+                else
                 {
                     if (_photos.Count == 1) DisplayPicture(Photo0, _photos[0].fileName, LaunchTimerBeforeCapture);
                     else if (_photos.Count == 2) DisplayPicture(Photo1, _photos[1].fileName, LaunchTimerBeforeCapture);
@@ -483,13 +480,13 @@ namespace face_o_maton
                 }));
         }
 
-        private PhotoPath Upload (String fileName, bool sync)
+        private PhotoPath Upload(String fileName, bool sync)
         {
             var photoPath = new PhotoPath(fileName);
             if (sync)
             {
                 photoPath = _uploader?.Upload(photoPath).GetAwaiter().GetResult();
-            } 
+            }
             else
             {
                 _uploader?.Upload(photoPath);
@@ -497,7 +494,7 @@ namespace face_o_maton
             return photoPath;
         }
 
-        private  void EndDisplayCallback()
+        private void EndDisplayCallback()
         {
             VisibilityManagement(4);
         }
@@ -566,7 +563,7 @@ namespace face_o_maton
                 _timerStartCapture = null;
             }
 
-            if (_timerWatchDog != null) { 
+            if (_timerWatchDog != null) {
                 _timerWatchDog.Dispose();
                 _timerWatchDog = null;
             }
@@ -603,12 +600,15 @@ namespace face_o_maton
         {
             _timerBeforeStoppingPhoto.Dispose();
             _timerBeforeStoppingPhoto = null;
-            
+
             GridPhoto.Dispatcher.Invoke(() => Stop());
         }
 
         private void Stop()
         {
+            Thread backupPhotosThread = new Thread(() => BackupPhotos());
+            backupPhotosThread.Start();
+            
             if (_liveView != null)
             {
                 _liveView.Stop();
@@ -629,9 +629,48 @@ namespace face_o_maton
             }
 
             GridPhoto.Dispatcher.Invoke(() => VisibilityManagement(0));
-            
+
             _playMain(_error);
             Hide();
+        }
+
+        private void BackupPhotos ()
+        {
+            try
+            {
+                string[] filePaths = Directory.GetFiles(Properties.Settings.Default.FacesPath);
+                foreach (var filename in filePaths)
+                {
+                    string file = filename.ToString();
+
+                    string str = Properties.Settings.Default.FacesBackUpPath + Path.GetFileName(file.ToString());
+                    // check the folder of filename, if not found create it
+                    if (!Directory.Exists(Path.GetDirectoryName(str)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(str));
+                    }
+                    if (!File.Exists(str))
+                    {
+                        File.Copy(file, str);
+                    }
+
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Debug("Cannot delete file " + file + " exception: " + e);
+                    }
+                    
+                }
+                _photosSavedOk = true;
+            }
+            catch (Exception e)
+            {
+                Log.Debug("Error on  backup " + e);
+                _photosSavedOk = false;
+            }
         }
     }
 }

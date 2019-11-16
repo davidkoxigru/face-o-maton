@@ -25,7 +25,7 @@ namespace face_o_maton.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Faces\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\face-o-maton\\Faces\\")]
         public string FacesPath {
             get {
                 return ((string)(this["FacesPath"]));
@@ -88,10 +88,19 @@ namespace face_o_maton.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("FacesShare")]
+        [global::System.Configuration.DefaultSettingValueAttribute("40 is the new 20")]
         public string GoogleAlbumName {
             get {
                 return ((string)(this["GoogleAlbumName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\40isthenew20\\")]
+        public string FacesBackUpPath {
+            get {
+                return ((string)(this["FacesBackUpPath"]));
             }
         }
     }
