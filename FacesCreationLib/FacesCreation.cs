@@ -50,8 +50,6 @@ namespace FacesCreationLib
                     {
                         ProcessFromBitmaps(dequeuedObject);
                     }
-
-
                 }
                 catch
                 {
@@ -62,20 +60,32 @@ namespace FacesCreationLib
 
         public static void ProcessFromPath(object dequeuedObject)
         {
-            var photoName= (String)dequeuedObject;
+            var photoName = (String)dequeuedObject;
             var photoPath = Path.GetDirectoryName(photoName) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(photoName);
             DirectoryInfo directoryInfo = Directory.CreateDirectory(photoPath);
-            
-            Image<Bgr, Byte> image = null;
-            // Load image
-            image = new Image<Bgr, Byte>(photoName); //Read the files as an 8-bit Bgr image   
-
-            // Get faces in image and save it
-            var f = new Faces(image);
-            f.GetFacesBitmap(false);
-            if (f.Count() > 0)
+            try
             {
-                f.Save(photoPath + Path.DirectorySeparatorChar + "0");
+                Image<Bgr, Byte> image = null;
+                // Load image
+                image = new Image<Bgr, Byte>(photoName); //Read the files as an 8-bit Bgr image   
+
+                // Get faces in image and save it
+                var f = new Faces(image);
+                f.GetFacesBitmap(false);
+                if (f.Count() > 0)
+                {
+                    f.Save(photoPath + Path.DirectorySeparatorChar + "0");
+                }
+            } catch { }
+            DeleteDirectoryIfEmpty(directoryInfo);
+        }
+
+        private static void DeleteDirectoryIfEmpty(DirectoryInfo directoryInfo)
+        {
+            // delete directory if empty
+            if (directoryInfo.GetFiles("*.*", SearchOption.AllDirectories).Length == 0)
+            {
+                directoryInfo.Delete();
             }
         }
 
@@ -84,37 +94,43 @@ namespace FacesCreationLib
             var photos = (Tuple<String, List<Bitmap>>)dequeuedObject;
             var photoPath = photos.Item1;
             DirectoryInfo directoryInfo = Directory.CreateDirectory(photoPath);
-            int i = 0;
-            foreach (var photo in photos.Item2)
-            {
-                // Save image in directory
-                photo.Save(photoPath + "\\" + directoryInfo.Name + "-" + (i++).ToString() + @".jpg");
-            }
 
-            Image<Bgr, Byte> image = null;
-            Faces faces = null;
-            int nbPoints = 0;
-            int index = 0;
-            for (; index < photos.Item2.Count; index++)
+            try
             {
-                var photo = photos.Item2[index];
-                // Load image
-                image = new Image<Bgr, Byte>(photo); //Read the files as an 8-bit Bgr image   
-
-                // Get faces in image and save it
-                var f = new Faces(image);
-                f.GetFacesBitmap(false);
-                if (f.Count() > nbPoints)
+                int i = 0;
+                foreach (var photo in photos.Item2)
                 {
-                    nbPoints = f.Count();
-                    faces = f;
+                    // Save image in directory
+                    photo.Save(photoPath + "\\" + directoryInfo.Name + "-" + (i++).ToString() + @".jpg");
+                }
+
+                Image<Bgr, Byte> image = null;
+                Faces faces = null;
+                int nbPoints = 0;
+                int index = 0;
+                for (; index < photos.Item2.Count; index++)
+                {
+                    var photo = photos.Item2[index];
+                    // Load image
+                    image = new Image<Bgr, Byte>(photo); //Read the files as an 8-bit Bgr image   
+
+                    // Get faces in image and save it
+                    var f = new Faces(image);
+                    f.GetFacesBitmap(false);
+                    if (f.Count() > nbPoints)
+                    {
+                        nbPoints = f.Count();
+                        faces = f;
+                    }
+                }
+
+                if (faces != null)
+                {
+                    faces.Save(photoPath + Path.DirectorySeparatorChar + index);
                 }
             }
-
-            if (faces != null)
-            {
-                faces.Save(photoPath + Path.DirectorySeparatorChar + index);
-            }
+            catch { }
+            DeleteDirectoryIfEmpty(directoryInfo);
         }
     }
 }
