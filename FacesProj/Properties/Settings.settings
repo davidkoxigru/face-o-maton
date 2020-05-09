@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="FacesPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">D:\Faces</Value>
+      <Value Profile="(Default)">E:\Faces</Value>
     </Setting>
     <Setting Name="Filter" Type="System.String" Scope="User">
       <Value Profile="(Default)">FaceMix</Value>

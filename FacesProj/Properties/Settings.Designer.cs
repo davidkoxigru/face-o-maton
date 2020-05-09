@@ -25,7 +25,7 @@ namespace FacesProj.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Faces")]
+        [global::System.Configuration.DefaultSettingValueAttribute("E:\\Faces")]
         public string FacesPath {
             get {
                 return ((string)(this["FacesPath"]));

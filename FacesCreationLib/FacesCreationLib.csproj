@@ -81,11 +81,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="PhotoshopActions\FaceMix.atn" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="PhotoshopActions\Star.atn" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="haarcascades\eye.xml">

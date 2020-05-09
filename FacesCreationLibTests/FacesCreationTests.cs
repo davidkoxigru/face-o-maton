@@ -15,14 +15,25 @@ namespace FacesCreationLib.Tests
         public void FacesCreationTest()
         {
 
-            //DirectoryInfo d = new DirectoryInfo(@"D:\Faces");
-            DirectoryInfo d = new DirectoryInfo(@".\Picture");
+            DirectoryInfo d = new DirectoryInfo(@"E:\Faces");
+            //DirectoryInfo d = new DirectoryInfo(@".\Picture");
             FileInfo[] Files = d.GetFiles("*.jpg"); 
             foreach (FileInfo file in Files)
             {
                 FacesCreation.ProcessFromPath(file.FullName);
             }           
             //Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void RunPhotoshopActionTest()
+        {
+            DirectoryInfo d = new DirectoryInfo(@".\Picture");
+           
+            FaceFeatures.RunPhotoshopAction(d.FullName + @"\face.png",
+            d.FullName + @"\face0.png",
+            "face0",
+            "Star");
         }
     }
 }

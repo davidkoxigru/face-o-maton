@@ -479,7 +479,6 @@ namespace FacesCreationLib
 
         public static void RunPhotoshopAction(string orig, string target, string action, string group)
         {
-            /* TODO Update Photoshop
             try { 
                 Application app = new Application();
                 var doc = app.Open(orig);
@@ -488,11 +487,10 @@ namespace FacesCreationLib
                 doc.SaveAs(target, options, true, PsExtensionType.psLowercase);
                 doc.Close(PsSaveOptions.psDoNotSaveChanges);
             }
-            catch 
+            catch (Exception e)
             {
-                
+                String test = e.Message;
             }
-            */
         }
     }
 }

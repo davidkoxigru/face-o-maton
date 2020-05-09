@@ -64,6 +64,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Picture\face.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Picture\test.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
